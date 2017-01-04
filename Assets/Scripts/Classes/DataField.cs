@@ -45,7 +45,7 @@ namespace Assets.Scripts.Classes
 
         public int MaxColumn
         {
-            get {return m_field.Length - 1; }
+            get { return m_field.Length - 1; }
         }
 
         public int MinRow
@@ -133,6 +133,24 @@ namespace Assets.Scripts.Classes
                     m_field[column][row] = default(T);
                 }
             }
+        }
+
+        public DataField<T> Copy()
+        {
+            //this is somewhat rancid and in no way fast...
+            //will only do a shallow copy
+            DataField<T> copy = new DataField<T>(m_field.Length, m_field[0].Length);
+
+            for (int column = 0; column < m_field.Length; column++)
+            {
+                for (int row = 0; row < m_field[column].Length; row++)
+                {
+                    DataFieldPosition position = new DataFieldPosition(column, row);
+                    T content = GetFromPosition(position);
+                    copy.SetAtPosition(position, content);
+                }
+            }
+            return copy;
         }
     }
 }

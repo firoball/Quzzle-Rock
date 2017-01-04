@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Behaviours\PlayField.cs" />
     <Compile Include="Assets\Scripts\Behaviours\PlayFieldWatcher.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\ReplacementConfig.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Token.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenConfig.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenStack.cs" />
@@ -74,12 +75,13 @@
     <Compile Include="Assets\Scripts\Classes\CombinationFinder.cs" />
     <Compile Include="Assets\Scripts\Classes\DataField.cs" />
     <Compile Include="Assets\Scripts\Classes\SwapTester.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\ITokenMoveEventTarget.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\ITokenEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ITokenStatusEventTarget.cs" />
     <Compile Include="Assets\Scripts\Static\Preferences.cs" />
     <Compile Include="Assets\Scripts\Structs\DataFieldPosition.cs" />
     <Compile Include="Assets\Scripts\Structs\Combination.cs" />
     <Compile Include="Assets\Scripts\Structs\DataFieldSize.cs" />
+    <Compile Include="Assets\Scripts\Structs\Replacement.cs" />
     <Compile Include="Assets\Scripts\Structs\TokenConfig.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

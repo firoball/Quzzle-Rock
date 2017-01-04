@@ -4,8 +4,10 @@ using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.Interfaces
 {
-    public interface ITokenMoveEventTarget : IEventSystemHandler
+    public interface ITokenEventTarget : IEventSystemHandler
     {
         void OnMoveTo(Vector3 newPosition);
+        void OnFakeMoveTo(Vector3 newPosition);
+        void OnRemove();
     }
 }

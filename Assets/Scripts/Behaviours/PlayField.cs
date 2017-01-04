@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
+using System.Collections.Generic;
 using Assets.Scripts.Static;
 using Assets.Scripts.Structs;
 using Assets.Scripts.Classes;
+using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Behaviours
 {
@@ -12,14 +15,17 @@ namespace Assets.Scripts.Behaviours
 
         private DataField<GameObject> m_fieldTokens;
         private DataField<int> m_fieldTypes;
+        private DataField<int> m_fieldTypesOriginal;
 
-        public static bool areNeighbours(GameObject token1, GameObject token2)
+        private const int c_minChainLength = 3;
+
+        public static bool AreNeighbours(GameObject token1, GameObject token2)
         {
             DataFieldPosition position1;
             DataFieldPosition position2;
             if (singleton != null)
             {
-                return singleton.areNeighbours(token1, token2, out position1, out position2);
+                return singleton.AreNeighbours(token1, token2, out position1, out position2);
             }
             else
             {
@@ -58,6 +64,7 @@ namespace Assets.Scripts.Behaviours
                 m_fieldTokens = new DataField<GameObject>(Preferences.ColumnCount, Preferences.RowCount);
                 m_fieldTypes = new DataField<int>(Preferences.ColumnCount, Preferences.RowCount);
                 Populate();
+                m_fieldTypesOriginal = m_fieldTypes.Copy();
                 SpawnTokens();
 
                 singleton = this;
@@ -73,7 +80,7 @@ namespace Assets.Scripts.Behaviours
         {
             System.Random rand = new System.Random();
 
-            //TODO: make this in a nice way without hardcoded values
+            //populate
             DataFieldSize size = m_fieldTokens.Size();
             for (int column = 0; column < size.Columns; column++)
             {
@@ -84,6 +91,34 @@ namespace Assets.Scripts.Behaviours
                     m_fieldTypes.SetAtPosition(fieldPos, id);
                 }
             }
+
+            //eliminate any generated combinations
+            CombinationFinder cf = new CombinationFinder(m_fieldTypes, true);
+            int iterations = 1;
+
+            //try maximum 100 iterations
+            while (cf.Find(c_minChainLength) && (iterations < 100))
+            {
+                List<Combination> comboList = cf.Combinations;
+                foreach (Combination combination in comboList)
+                {
+                    //only replace id if more than one id is available (this should always be the case)
+                    if ((combination.Positions.Count > 1) && (Preferences.TokenCount > 1))
+                    {
+                        int id;
+                        do
+                        {
+                            id = rand.Next(0, Preferences.TokenCount);
+                        } while (id == combination.Id);
+                        DataFieldPosition fieldPos = combination.Positions[1];
+                        m_fieldTypes.SetAtPosition(fieldPos, id);
+                    }
+                }
+                cf.Clear();
+                iterations++;
+            }
+
+            Debug.Log("Populate: " + iterations + " iterations performed.");
         }
 
         private void SpawnTokens()
@@ -120,12 +155,12 @@ namespace Assets.Scripts.Behaviours
             DataFieldPosition position1;
             DataFieldPosition position2;
 
-            bool neighbours = areNeighbours(token1, token2, out position1, out position2);
+            bool neighbours = AreNeighbours(token1, token2, out position1, out position2);
 
             if (neighbours)
             {
-                SwapTester test2 = new SwapTester(m_fieldTypes);
-                if (test2.IsValidSwap(position1, position2, 3))
+                SwapTester swapTester = new SwapTester(m_fieldTypes);
+                if (swapTester.IsValidSwap(position1, position2, c_minChainLength))
                 { 
                     string name = token1.name;
                     token1.name = token2.name;
@@ -138,9 +173,22 @@ namespace Assets.Scripts.Behaviours
                     m_fieldTypes.SetAtPosition(position1, id2);
                     m_fieldTypes.SetAtPosition(position2, id1);
 
-                    //TEST
-                    CombinationFinder test = new CombinationFinder(m_fieldTypes, true);
-                    test.Find(3);
+                    //TEST REMOVE (playfield will be out of sync)
+                    CombinationFinder cf = new CombinationFinder(m_fieldTypes, true);
+                    if (cf.Find(c_minChainLength))
+                    {
+                        //TODO: move to TokenReplacer + add Replacement functionality
+                        List<Combination> comboList = cf.Combinations;
+                        foreach (Combination combination in comboList)
+                        {
+                            foreach (DataFieldPosition pos in combination.Positions)
+                            {
+                                GameObject go = m_fieldTokens.GetFromPosition(pos);
+                                ExecuteEvents.Execute<ITokenEventTarget>(go, null, (x, y) => x.OnRemove());
+                                m_fieldTokens.SetAtPosition(pos, null);
+                            }
+                        }
+                    }
 
                     allowSwap = true;
                 }
@@ -166,7 +214,7 @@ namespace Assets.Scripts.Behaviours
             return bounds;
         }
 
-        private bool areNeighbours(GameObject token1, GameObject token2, out DataFieldPosition pos1, out DataFieldPosition pos2)
+        private bool AreNeighbours(GameObject token1, GameObject token2, out DataFieldPosition pos1, out DataFieldPosition pos2)
         {
             DataFieldPosition position1;
             DataFieldPosition position2;
@@ -185,9 +233,9 @@ namespace Assets.Scripts.Behaviours
         }
 
 
-        private void Encapsulate(GameObject go, ref Bounds bounds)
+        private void Encapsulate(GameObject gameObject, ref Bounds bounds)
         {
-            MeshRenderer renderer = go.GetComponent<MeshRenderer>();
+            MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
             if (renderer != null)
             {
                 bounds.Encapsulate(renderer.bounds);
