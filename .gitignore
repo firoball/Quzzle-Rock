@@ -1,5 +1,7 @@
 /.vs
 *.meta
 *.log
-/Library
-/build
+/[Ll]ibrary
+/[Bb]uild
+/[Tt]emp
+/[Oo]bj
