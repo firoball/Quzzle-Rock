@@ -76,6 +76,11 @@ namespace Assets.Scripts.Classes
             int partnerId = m_idField.GetFromPosition(origin);
             int id;
 
+            if ((originId == -1) || (partnerId == -1))
+            {
+                return 0;
+            }
+
             /* check if current position is same as origin (swapped token) or
              * partner (swapped token partner) position.
              * as the swap was not yet performed, the playfield still has old data

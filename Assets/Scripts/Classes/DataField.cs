@@ -112,7 +112,7 @@ namespace Assets.Scripts.Classes
         {
             if (
                 (position.Column >= 0) && (position.Column < m_field.Length) &&
-                (position.Row >= 0) && (position.Column < m_field[0].Length)
+                (position.Row >= 0) && (position.Row < m_field[0].Length)
                 )
             {
                 return true;

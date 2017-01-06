@@ -46,7 +46,7 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        void Start()
+        void Awake()
         {
             m_originalRotation = transform.eulerAngles;
             m_hoverTimer = 0.0f;
@@ -54,7 +54,10 @@ namespace Assets.Scripts.Behaviours
             m_moveTimerReverse = 0.0f;
             m_removeTimer = 0.0f;
             m_refTime = Time.time;
+        }
 
+        void Start()
+        {
             Transform child = transform.FindChild("SelectionMarker");
             if (child != null)
             {
@@ -283,7 +286,7 @@ namespace Assets.Scripts.Behaviours
 
         private IEnumerator WaitRemove()
         {
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.3f); //may not be needed anymore with introduction of PlayTurn
             m_removeTimer = 1.0f;
             Destroy(gameObject, 0.5f);
         }

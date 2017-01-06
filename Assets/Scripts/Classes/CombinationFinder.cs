@@ -80,10 +80,10 @@ namespace Assets.Scripts.Classes
 
         private int Filter(int minLength)
         {
-            for (int i = m_combinations.Count - 1; i>= 0; i--)
+            for (int i = m_combinations.Count - 1; i >= 0; i--)
             {
-                //remove all combinations which are too short
-                if (m_combinations[i].Positions.Count < minLength)
+                //remove all combinations which are too short or are empty (id = -1)
+                if ((m_combinations[i].Positions.Count < minLength) || (m_combinations[i].Id == -1))
                 {
                     m_combinations.RemoveAt(i);
                 }
@@ -116,7 +116,7 @@ namespace Assets.Scripts.Classes
             string str = "CombinationFinder";
             foreach (Combination combination in m_combinations)
             {
-                str += "\n" + combination.Positions[0].Column + "/" + combination.Positions[0].Row 
+                str += "\n" + combination.Positions[0].Column + "/" + combination.Positions[0].Row
                     + " id: " + combination.Id + " size: " + combination.Positions.Count;
             }
             Debug.Log(str);

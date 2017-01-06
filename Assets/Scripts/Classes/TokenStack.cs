@@ -1,48 +1,42 @@
 ﻿using UnityEngine;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.Static;
 
-namespace Assets.Scripts.Behaviours
+namespace Assets.Scripts.Classes
 {
-    public class TokenStack : MonoBehaviour
+    public class TokenStack
     {
-        private static TokenStack singleton = null;
-        [SerializeField]
-        private int m_columnCount;
-        [SerializeField]
-        private int m_tokenCount;
-        [SerializeField]
         private List<int>[] m_columns;
+
+        private int m_columnCount;
+        private int m_tokenCount;
         private int[] m_columnIndex;
         private System.Random m_rand = new System.Random();
 
-        [SerializeField][Range(10, 1000)]
-        private int m_stackSize = 100;
-        [SerializeField]
-        private bool m_debug = false;
+        private int m_stackSize;
+        private bool m_debug;
 
-        void Awake()
+        public TokenStack(int stackSize) : this (stackSize, false)
         {
-            if (singleton == null)
-            {
-                singleton = this;
-            }
-            else
-            {
-                Debug.LogWarning("TokenStack: Multiple instances detected. Destroying...");
-                Destroy(this);
-            }
+
         }
 
-        void Start()
+        public TokenStack() : this(100, false)
         {
+
+        }
+
+        public TokenStack(int stackSize, bool debug)
+        {
+            m_stackSize = stackSize;
+            m_debug = debug;
+
             m_columnCount = Preferences.ColumnCount;
             m_tokenCount = Preferences.TokenCount;
 
             m_columnIndex = new int[m_columnCount];
-            Reset();
+            Restart();
 
             m_columns = new List<int>[m_columnCount];
             for (int i = 0; i < m_columns.Length; i++)
@@ -57,21 +51,11 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        private void GenerateTokenIds(List<int> column)
-        {
-            for (int i = 0; i < column.Capacity; i++)
-            {
-                int token = m_rand.Next(0, m_tokenCount);
-                column.Add(token);
-            }
-
-        }
-
         public int GetNextTokenId(int columnIndex)
         {
             if (columnIndex < 0 || columnIndex > m_columns.Length)
             {
-                return 0;
+                return -1;
             }
 
             List<int> columnStack = m_columns[columnIndex];
@@ -82,7 +66,7 @@ namespace Assets.Scripts.Behaviours
             return columnStack[index];
         }
 
-        public void Reset()
+        public void Restart()
         {
             for (int i = 0; i < m_columnIndex.Length; i++)
             {
@@ -90,7 +74,7 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        public void Log()
+        private void Log()
         {
             string log = "TokenStack (" + Convert.ToString(m_stackSize) + "):\n";
             for (int i = m_stackSize - 1; i >= 0; i--)
@@ -107,5 +91,16 @@ namespace Assets.Scripts.Behaviours
             }
             Debug.Log(log);
         }
+
+        private void GenerateTokenIds(List<int> column)
+        {
+            for (int i = 0; i < column.Capacity; i++)
+            {
+                int token = m_rand.Next(0, m_tokenCount);
+                column.Add(token);
+            }
+
+        }
+
     }
 }
