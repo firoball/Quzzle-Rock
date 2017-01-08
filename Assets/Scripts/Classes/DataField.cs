@@ -8,8 +8,10 @@ namespace Assets.Scripts.Classes
     {
         private T[][] m_field;
 
-        public DataField(int columns, int rows)
+        public DataField(DataFieldSize size)
         {
+            int columns = size.Columns;
+            int rows = size.Rows;
             if (columns < 1)
             {
                 columns = 1;
@@ -139,7 +141,7 @@ namespace Assets.Scripts.Classes
         {
             //this is somewhat rancid and in no way fast...
             //will only do a shallow copy
-            DataField<T> copy = new DataField<T>(m_field.Length, m_field[0].Length);
+            DataField<T> copy = new DataField<T>(Size());
 
             for (int column = 0; column < m_field.Length; column++)
             {

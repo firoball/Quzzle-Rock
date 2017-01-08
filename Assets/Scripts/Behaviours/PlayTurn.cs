@@ -1,21 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using Assets.Scripts.Structs;
 
 namespace Assets.Scripts.Behaviours
 {
     public class PlayTurn : MonoBehaviour
     {
-        private static PlayTurn singleton;
+        private static PlayTurn s_singleton;
 
-        private int m_turnsLeft;
-        private int m_turnsMax;
-        private int m_combos;
+        private RuleSet m_ruleSet;
 
         public static void PlayerDone()
         {
-            if (singleton != null)
+            if (s_singleton != null)
             {
-                singleton.StartCoroutine(singleton.ProcessPlayField());
+                s_singleton.StartCoroutine(s_singleton.ProcessPlayField());
             }
             else
             {
@@ -25,11 +25,20 @@ namespace Assets.Scripts.Behaviours
 
         void Awake()
         {
-            if (singleton == null)
+            if (s_singleton == null)
             {
-                singleton = this;
-                m_turnsLeft = 30; //TEMP
-                Next();
+                s_singleton = this;
+                m_ruleSet = GetComponent<RuleSet>();
+                if (m_ruleSet != null)
+                {
+                    PlayField.Unlock();
+                }
+                else
+                {
+                    //bypass all kind of null pointer checks by simply locking the PlayField
+                    PlayField.Lock();
+                    Debug.LogWarning("PlayTurn: No RuleSet found. Game cannot be started.");
+                }
             }
             else
             {
@@ -38,22 +47,26 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        void Update()
-        {
-
-        }
-
-        private void Next()
-        {
-            PlayField.Unlock();
-            m_combos = 0; //TODO: check if good here
-        }
-
         private void End()
         {
             m_ended = true;
-            m_combos = 0;
             Debug.Log("Game ended.");
+        }
+
+        private void New()
+        {
+            m_ruleSet.Restart();
+            m_ended = false;
+            PlayField.Restart(true);
+            PlayField.Unlock();
+        }
+
+        private void Retry()
+        {
+            m_ruleSet.Restart();
+            m_ended = false;
+            PlayField.Restart(false);
+            PlayField.Unlock();
         }
 
         private IEnumerator ProcessPlayField()
@@ -61,18 +74,16 @@ namespace Assets.Scripts.Behaviours
             //take control from player
             PlayField.Lock();
             yield return new WaitForSeconds(0.2f);
-            m_turnsLeft--;
 
             //Resolve all combinations unitl no more are found
-            m_combos = 0;
             bool combo = false;
             do
             {
-                if (PlayField.ResolveCombinations())
+                List<Combination> comboList;
+                if (PlayField.ResolveCombinations(out comboList))
                 {
-                    //TODO: evaluate quantity and quality of Combinations, scoring
                     combo = true;
-                    m_combos++;
+                    m_ruleSet.ProcessCombo(comboList);
                     yield return new WaitForSeconds(0.3f);
 
                     //Refill empty field positions
@@ -83,54 +94,59 @@ namespace Assets.Scripts.Behaviours
                         filled = PlayField.Refill();
                     } while (!filled);
                     yield return new WaitForSeconds(0.2f);
+                    m_ruleSet.PlayFieldModifier();
                 }
                 else
                 {
                     combo = false;
                 }
             } while (combo);
-            Debug.Log("PlayTurn: " + m_combos + " combos done.");
+
+            //end current turn
             yield return new WaitForSeconds(0.3f);
+            m_ruleSet.TurnEnd();
 
             //check if game is over
-            if (m_turnsLeft == 0)
+            if (m_ruleSet.GameWon())
+            {
+                End();
+            }
+            else if (m_ruleSet.GameLost())
             {
                 End();
             }
             else
             {
-                Debug.Log("PlayTurn: " + m_turnsLeft + " turns left.");
-
                 //test playfield for stuck state
                 if (PlayField.IsStuck())
                 {
-                    Debug.Log("PlayTurn: no more combinations possible");
-                    //TODO: Repopulate
-                    m_stuck = true;
-                    yield return new WaitForSeconds(3.0f);
+                    //create new playfield
+                    float clearDelay = PlayField.Clear();
+                    yield return new WaitForSeconds(clearDelay + 0.2f);
+                    PlayField.Populate();
                 }
 
                 //proceed with next round
-                Next();
+                m_ruleSet.TurnStart();
+                PlayField.Unlock();
             }
         }
+
         private void OnGUI()
         {
-            GUI.Label(new Rect(10, 10, 100, 20), "Turns left: " + m_turnsLeft);
-            if (m_combos > 0)
-            {
-                GUI.Label(new Rect(10, 30, 100, 20), "Combos: " + m_combos);
-            }
-            if (m_stuck)
-            {
-                GUI.Label(new Rect(10, 50, 100, 20), "PlayField stuck.");
-            }
             if (m_ended)
             {
-                GUI.Label(new Rect(10, 50, 100, 20), "Game ended.");
+                GUI.Label(new Rect(10, 70, 100, 20), "Game ended.");
+                if (GUI.Button(new Rect(10, 95, 100, 20), "New Game"))
+                {
+                    New();
+                }
+                if (GUI.Button(new Rect(10, 120, 100, 20), "Retry"))
+                {
+                    Retry();
+                }
             }
         }
-        private bool m_stuck = false;
         private bool m_ended = false;
     }
 }

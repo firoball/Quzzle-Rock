@@ -8,7 +8,6 @@ namespace Assets.Scripts.Classes
     public class TokenStack
     {
         private List<int>[] m_columns;
-
         private int m_columnCount;
         private int m_tokenCount;
         private int[] m_columnIndex;

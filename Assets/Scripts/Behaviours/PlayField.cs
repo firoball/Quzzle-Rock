@@ -11,7 +11,7 @@ namespace Assets.Scripts.Behaviours
 {
     public class PlayField : MonoBehaviour
     {
-        private static PlayField singleton = null;
+        private static PlayField s_singleton = null;
 
         [SerializeField]
         [Range(10, 1000)]
@@ -21,11 +21,11 @@ namespace Assets.Scripts.Behaviours
 
         private DataField<GameObject> m_fieldTokens;
         private DataField<int> m_fieldTypes;
-        private DataField<int> m_fieldTypesOriginal;
         private TokenStack m_tokenStack;
 
         private const int c_minChainLength = 3;
         private const float c_worldSize = 1.3f;
+        private const float c_ClearDelay = 0.07f;
 
         #region static functions
 
@@ -33,9 +33,9 @@ namespace Assets.Scripts.Behaviours
         {
             DataFieldPosition position1;
             DataFieldPosition position2;
-            if (singleton != null)
+            if (s_singleton != null)
             {
-                return singleton.AreNeighbours(token1, token2, out position1, out position2);
+                return s_singleton.AreNeighbours(token1, token2, out position1, out position2);
             }
             else
             {
@@ -45,9 +45,9 @@ namespace Assets.Scripts.Behaviours
 
         public static bool SwapTokens(GameObject token1, GameObject token2)
         {
-            if (singleton != null)
+            if (s_singleton != null)
             {
-                return singleton.SwapTokens_internal(token1, token2);
+                return s_singleton.SwapTokens_internal(token1, token2);
             }
             else
             {
@@ -55,14 +55,15 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        public static bool ResolveCombinations()
+        public static bool ResolveCombinations(out List<Combination> comboList)
         {
-            if (singleton != null)
+            if (s_singleton != null)
             {
-                return singleton.ResolveCombinations_internal();
+                return s_singleton.ResolveCombinations_internal(out comboList);
             }
             else
             {
+                comboList = null;
                 return false;
             }
 
@@ -70,9 +71,9 @@ namespace Assets.Scripts.Behaviours
 
         public static Bounds GetDimension()
         {
-            if (singleton != null)
+            if (s_singleton != null)
             {
-                return singleton.GetDimension_internal();
+                return s_singleton.GetDimension_internal();
             }
             else
             {
@@ -82,9 +83,9 @@ namespace Assets.Scripts.Behaviours
 
         public static bool IsStuck()
         {
-            if (singleton != null)
+            if (s_singleton != null)
             {
-                return singleton.IsStuck_internal();
+                return s_singleton.IsStuck_internal();
             }
             else
             {
@@ -94,13 +95,59 @@ namespace Assets.Scripts.Behaviours
 
         public static bool Refill()
         {
-            if (singleton != null)
+            if (s_singleton != null)
             {
-                return singleton.Refill_internal();
+                return s_singleton.Refill_internal();
             }
             else
             {
                 return true;
+            }
+        }
+
+        public static void Populate()
+        {
+            if (s_singleton != null)
+            {
+                s_singleton.Populate_internal();
+                s_singleton.SpawnTokens();
+            }
+        }
+
+        public static float Clear()
+        {
+            if (s_singleton != null)
+            {
+                return s_singleton.Clear(false);
+            }
+            else
+            {
+                return 0.0f;
+            }
+        }
+
+        public static void Restart(bool newStack)
+        {
+            if (s_singleton != null)
+            {
+                s_singleton.Clear(true);
+                if (newStack)
+                {
+                    s_singleton.m_tokenStack = new TokenStack(s_singleton.m_stackSize, s_singleton.m_debug);
+                }
+                else
+                {
+                    s_singleton.m_tokenStack.Restart();
+                }
+                Populate();
+            }
+        }
+
+        public static void CreateTokensFromDictionary(Dictionary<DataFieldPosition, int> tokenDict)
+        {
+            if (s_singleton != null)
+            {
+                s_singleton.CreateTokensFromDictionary_internal(tokenDict);
             }
         }
 
@@ -116,18 +163,20 @@ namespace Assets.Scripts.Behaviours
 
         #endregion
 
+        #region unity callbacks
+
         void Awake()
         {
-            if (singleton == null)
+            if (s_singleton == null)
             {
-                m_fieldTokens = new DataField<GameObject>(Preferences.ColumnCount, Preferences.RowCount);
-                m_fieldTypes = new DataField<int>(Preferences.ColumnCount, Preferences.RowCount);
+                DataFieldSize size = new DataFieldSize(Preferences.ColumnCount, Preferences.RowCount);
+                m_fieldTokens = new DataField<GameObject>(size);
+                m_fieldTypes = new DataField<int>(size);
                 m_tokenStack = new TokenStack(m_stackSize, m_debug);
-                Populate();
-                m_fieldTypesOriginal = m_fieldTypes.Copy();
+                Populate_internal();
                 SpawnTokens();
 
-                singleton = this;
+                s_singleton = this;
             }
             else
             {
@@ -136,19 +185,19 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
+        #endregion
+
         #region private functions
 
-        private void Populate()
+        private void Populate_internal()
         {
-            System.Random rand = new System.Random();
-
             //populate
             DataFieldSize size = m_fieldTokens.Size();
             for (int column = 0; column < size.Columns; column++)
             {
                 for (int row = 0; row < size.Rows; row++)
                 {
-                    int id = rand.Next(0, Preferences.TokenCount);
+                    int id = m_tokenStack.GetNextTokenId(column);
                     DataFieldPosition fieldPos = new DataFieldPosition(column, row);
                     m_fieldTypes.SetAtPosition(fieldPos, id);
                 }
@@ -170,7 +219,7 @@ namespace Assets.Scripts.Behaviours
                         int id;
                         do
                         {
-                            id = rand.Next(0, Preferences.TokenCount);
+                            id = m_tokenStack.GetNextTokenId(combination.Positions[1].Column);
                         } while (id == combination.Id);
                         DataFieldPosition fieldPos = combination.Positions[1];
                         m_fieldTypes.SetAtPosition(fieldPos, id);
@@ -236,14 +285,16 @@ namespace Assets.Scripts.Behaviours
             return allowSwap;
         }
 
-        private bool ResolveCombinations_internal()
+        private bool ResolveCombinations_internal(out List<Combination> comboList)
         {
             bool found = false;
+            comboList = null;
             CombinationFinder cf = new CombinationFinder(m_fieldTypes, m_debug);
             if (cf.Find(c_minChainLength))
             {
                 found = true;
-                List<Combination> comboList = cf.Combinations;
+                comboList = cf.Combinations;
+                Dictionary<DataFieldPosition, int> newTokenDict = new Dictionary<DataFieldPosition, int>();
                 foreach (Combination combination in comboList)
                 {
                     int[] result;
@@ -251,46 +302,30 @@ namespace Assets.Scripts.Behaviours
                     for (int i = 0; i < combination.Positions.Count; i++)
                     {
                         DataFieldPosition pos = combination.Positions[i];
-                        //remove old tokens
+                        //remove old token
                         GameObject oldToken = m_fieldTokens.GetFromPosition(pos);
                         ExecuteEvents.Execute<ITokenEventTarget>(oldToken, null, (x, y) => x.OnRemove());
+                        m_fieldTokens.SetAtPosition(pos, null);
+                        m_fieldTypes.SetAtPosition(pos, -1);
 
-                        if (replace)
+                        /* schedule replacement token to be created, if any. Check against result length
+                         * since replacement might be shorter than actual combination (fallback).
+                         * Avoid double creation of token at one position caused by layered combinations
+                         */
+                        if (replace && (i < result.Length) &&
+                            (result[i] != -1) && !newTokenDict.ContainsKey(pos))
                         {
-                            GameObject newToken = null;
-                            GameObject go = GetTokenPrefabForId(result[i]);
-                            if (go != null)
-                            {
-                                newToken = (GameObject)Instantiate(go, oldToken.transform.position, Quaternion.identity);
-                                newToken.name = "Token" + pos.Column + "_" + pos.Row;
-                            }
-                            m_fieldTokens.SetAtPosition(pos, newToken);
-                            m_fieldTypes.SetAtPosition(pos, result[i]);
-                        }
-                        else
-                        //no matching replacement set was found
-                        {
-                            m_fieldTokens.SetAtPosition(pos, null);
-                            m_fieldTypes.SetAtPosition(pos, -1);
+                            newTokenDict.Add(pos, result[i]);
                         }
                     }
+
                 }
+
+                //now create scheduled repalcement tokens
+                CreateTokensFromDictionary_internal(newTokenDict);
+                newTokenDict.Clear();
             }
             return found;
-        }
-
-        private GameObject GetTokenPrefabForId(int id)
-        {
-            GameObject go = null;
-            if (id > -1 && id < TokenConfig.StandardToken.Length)
-            {
-                go = TokenConfig.StandardToken[id];
-            }
-            else if (id > 99 && id < 100 + TokenConfig.SpecialToken.Length)
-            {
-                go = TokenConfig.SpecialToken[id - 100];
-            }
-            return go;
         }
 
         private Bounds GetDimension_internal()
@@ -350,7 +385,7 @@ namespace Assets.Scripts.Behaviours
                     DataFieldPosition lowerPos = new DataFieldPosition(column, row);
                     int upperId;
                     int lowerId = m_fieldTypes.GetFromPosition(lowerPos);
-                    
+
                     //gap detected
                     if (lowerId == -1)
                     {
@@ -435,6 +470,31 @@ namespace Assets.Scripts.Behaviours
             return neighbours;
         }
 
+        private float Clear(bool hardClear)
+        {
+            float timer = 0.0f;
+            for (int column = m_fieldTypes.MinColumn; column <= m_fieldTypes.MaxColumn; column++)
+            {
+                for (int row = m_fieldTypes.MinRow; row <= m_fieldTypes.MaxRow; row++)
+                {
+                    DataFieldPosition pos = new DataFieldPosition(column, row);
+                    GameObject token = m_fieldTokens.GetFromPosition(pos);
+                    if (hardClear)
+                    {
+                        Destroy(token);
+                    }
+                    else
+                    {
+                        ExecuteEvents.Execute<ITokenEventTarget>(token, null, (x, y) => x.OnRemove(timer));
+                        timer += c_ClearDelay;
+                    }
+                }
+            }
+            m_fieldTokens.Clear();
+            m_fieldTypes.Clear();
+
+            return timer;
+        }
 
         private void Encapsulate(GameObject gameObject, ref Bounds bounds)
         {
@@ -456,6 +516,40 @@ namespace Assets.Scripts.Behaviours
             return new Vector3(x, y, 0.0f);
         }
 
+        private GameObject GetTokenPrefabForId(int id)
+        {
+            GameObject go = null;
+            if (id > -1 && id < TokenConfig.StandardToken.Length)
+            {
+                go = TokenConfig.StandardToken[id];
+            }
+            else if (id > 99 && id < 100 + TokenConfig.SpecialToken.Length)
+            {
+                go = TokenConfig.SpecialToken[id - 100];
+            }
+            return go;
+        }
+
+        private void CreateTokensFromDictionary_internal(Dictionary<DataFieldPosition, int> tokenDict)
+        {
+            foreach (KeyValuePair<DataFieldPosition, int> entry in tokenDict)
+            {
+                int id = entry.Value;
+                DataFieldPosition pos = entry.Key;
+
+                GameObject oldToken = m_fieldTokens.GetFromPosition(pos);
+                if (oldToken != null)
+                {
+                    Destroy(oldToken);
+                }
+                GameObject go = GetTokenPrefabForId(id);
+                Vector3 worldPos = TransformFieldToWorld(pos);
+                GameObject newToken = (GameObject)Instantiate(go, worldPos, Quaternion.identity);
+                newToken.name = "Token" + pos.Column + "_" + pos.Row;
+                m_fieldTokens.SetAtPosition(pos, newToken);
+                m_fieldTypes.SetAtPosition(pos, id);
+            }
+        }
         #endregion
     }
 }

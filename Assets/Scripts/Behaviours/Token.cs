@@ -219,7 +219,13 @@ namespace Assets.Scripts.Behaviours
 
         public void OnRemove()
         {
-            StartCoroutine(WaitRemove());
+            StartCoroutine(WaitRemove(0.0f));
+        }
+
+        public void OnRemove(float delay)
+        {
+            delay = Mathf.Max(delay, 0.0f);
+            StartCoroutine(WaitRemove(delay));
         }
 
         void OnMouseEnter()
@@ -284,9 +290,9 @@ namespace Assets.Scripts.Behaviours
             s_swappedToken2 = null;
         }
 
-        private IEnumerator WaitRemove()
+        private IEnumerator WaitRemove(float delay)
         {
-            yield return new WaitForSeconds(0.3f); //may not be needed anymore with introduction of PlayTurn
+            yield return new WaitForSeconds(delay);
             m_removeTimer = 1.0f;
             Destroy(gameObject, 0.5f);
         }

@@ -69,8 +69,11 @@
     <Compile Include="Assets\Scripts\Behaviours\PlayFieldWatcher.cs" />
     <Compile Include="Assets\Scripts\Behaviours\PlayTurn.cs" />
     <Compile Include="Assets\Scripts\Behaviours\ReplacementConfig.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\RuleSet.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\RuleSetSmash.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Token.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenConfig.cs" />
+    <Compile Include="Assets\Scripts\Classes\PositionStack.cs" />
     <Compile Include="Assets\Scripts\Classes\TokenStack.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenStatusVisualizer.cs" />
     <Compile Include="Assets\Scripts\Classes\CombinationFinder.cs" />

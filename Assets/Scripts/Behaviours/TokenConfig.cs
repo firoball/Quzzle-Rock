@@ -6,7 +6,7 @@ namespace Assets.Scripts.Behaviours
 {
     class TokenConfig : MonoBehaviour
     {
-        private static TokenConfig singleton = null;
+        private static TokenConfig s_singleton = null;
 
         [SerializeField]
         private GameObject[] m_standardTokenList;
@@ -17,9 +17,9 @@ namespace Assets.Scripts.Behaviours
         {
             get
             {
-                if (singleton != null)
+                if (s_singleton != null)
                 {
-                    return singleton.m_standardTokenList;
+                    return s_singleton.m_standardTokenList;
                 }
                 else
                 {
@@ -32,9 +32,9 @@ namespace Assets.Scripts.Behaviours
         {
             get
             {
-                if (singleton != null)
+                if (s_singleton != null)
                 {
-                    return singleton.m_specialTokenList;
+                    return s_singleton.m_specialTokenList;
                 }
                 else
                 {
@@ -45,9 +45,9 @@ namespace Assets.Scripts.Behaviours
 
         public void Awake()
         {
-            if (singleton == null)
+            if (s_singleton == null)
             {
-                singleton = this;
+                s_singleton = this;
 
                 if (m_standardTokenList.Length < Preferences.TokenCount)
                 {

@@ -8,7 +8,7 @@ namespace Assets.Scripts.Behaviours
     public class ReplacementConfig : MonoBehaviour
     {
 
-        private static ReplacementConfig singleton = null;
+        private static ReplacementConfig s_singleton = null;
 
         [SerializeField]
         private List<Replacement> m_replacements;
@@ -17,9 +17,9 @@ namespace Assets.Scripts.Behaviours
         {
             get
             {
-                if (singleton != null)
+                if (s_singleton != null)
                 {
-                    return singleton.m_replacements;
+                    return s_singleton.m_replacements;
                 }
                 else
                 {
@@ -33,13 +33,20 @@ namespace Assets.Scripts.Behaviours
             bool found = false;
             result = null;
 
-            foreach (Replacement replacement in singleton.m_replacements)
+            foreach (Replacement replacement in s_singleton.m_replacements)
             {
-                if ((replacement.OriginalId == id) && (replacement.Size() == size))
+                /* try to find best match. If combination size is bigger than size of any
+                 * replacement then pick at least best match
+                 */
+                if ((replacement.OriginalId == id) && (replacement.Size() <= size))
                 {
                     found = true;
                     result = replacement.ReplacementIds;
-                    break;
+                    //exact size match - it won't get any better. Abort search
+                    if ((replacement.Size() == size))
+                    {
+                        break;
+                    }
                 }
             }
 
@@ -48,9 +55,9 @@ namespace Assets.Scripts.Behaviours
 
         void Awake()
         {
-            if (singleton == null)
+            if (s_singleton == null)
             {
-                singleton = this;
+                s_singleton = this;
             }
             else
             {
