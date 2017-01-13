@@ -1,19 +1,17 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Behaviours
 {
     [RequireComponent(typeof(CanvasGroup))]
-    [RequireComponent(typeof(Canvas))]
     class MenuFader : MonoBehaviour, IMenuEventTarget
     {
         [SerializeField]
         private float m_fadeSpeed = 4.0f;
+        [SerializeField]
+        private bool m_showOnStart = false;
 
         private CanvasGroup m_canvasGroup;
-        private Canvas m_canvas;
         private bool m_fadeOut = false;
         private bool m_fadeIn = false;
 
@@ -21,7 +19,14 @@ namespace Assets.Scripts.Behaviours
         void Awake()
         {
             m_canvasGroup = GetComponent<CanvasGroup>();
-            m_canvas = GetComponent<Canvas>();
+            if (m_showOnStart)
+            {
+                Enable();
+            }
+            else
+            {
+                Disable();
+            }
         }
 
         void Update()
@@ -53,19 +58,20 @@ namespace Assets.Scripts.Behaviours
         {
             m_canvasGroup.alpha = 1.0f;
             m_canvasGroup.blocksRaycasts = true;
+            m_canvasGroup.interactable = true;
         }
 
         private void Disable()
         {
             m_canvasGroup.alpha = 0.0f;
-            //m_canvas.enabled = false;
-            m_canvasGroup.blocksRaycasts = true;
+            m_canvasGroup.blocksRaycasts = false;
+            m_canvasGroup.interactable = false;
         }
 
         public void Show(bool immediately)
         {
-            //m_canvas.enabled = true;
             m_canvasGroup.blocksRaycasts = false;
+            m_canvasGroup.interactable = false;
             m_fadeOut = false;
             if (immediately)
             {
@@ -81,6 +87,7 @@ namespace Assets.Scripts.Behaviours
         public void Hide(bool immediately)
         {
             m_canvasGroup.blocksRaycasts = false;
+            m_canvasGroup.interactable = false;
             m_fadeIn = false;
             if (immediately)
             {

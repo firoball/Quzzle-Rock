@@ -20,14 +20,16 @@ namespace Assets.Scripts.Behaviours
         private int m_extraTurns;
         private PositionStack m_positionStack;
 
-        private int m_turnsMax = 20;
-        private int m_pointsMax = 60;
+        private int m_turnsMax;
+        private int m_pointsMax;
 
         private const int c_specialTokenId = 100;
 
         void Awake()
         {
             m_positionStack = new PositionStack(m_stackSize, m_debug);
+            m_turnsMax = 1;// Preferences.Current.MoveCount;
+            m_pointsMax = Preferences.Current.TargetCount;
             Restart();
         }
 

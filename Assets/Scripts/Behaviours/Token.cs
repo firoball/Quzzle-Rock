@@ -156,7 +156,8 @@ namespace Assets.Scripts.Behaviours
         {
             if (
                 (s_swappedToken1 != null && s_swappedToken2 != null) ||
-                (m_removeTimer > 0.0f) || s_locked
+                (m_removeTimer > 0.0f) || s_locked ||
+                EventSystem.current.IsPointerOverGameObject()
                 )
             {
                 gameObject.layer = 2; //Ignore Raycast

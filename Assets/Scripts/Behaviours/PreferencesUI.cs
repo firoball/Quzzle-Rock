@@ -1,16 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System;
-using System.Collections;
 using Assets.Scripts.Structs;
 using Assets.Scripts.Classes;
 using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Behaviours
 {
-    public class PreferencesUI : MonoBehaviour
+    public class PreferencesUI : DefaultUI
     {
         [SerializeField]
         [Range(-400.0f, 0.0f)]
@@ -25,14 +22,19 @@ namespace Assets.Scripts.Behaviours
         [SerializeField]
         private GameObject m_exitMenu;
         [SerializeField]
-        private GameObject m_HelpMenu;
+        private GameObject m_helpMenu;
         [SerializeField]
-        private GameObject m_StatisticsMenu;
+        private GameObject m_statisticsMenu;
+        [SerializeField]
+        private GameObject m_optionsMenu;
+        [SerializeField]
+        private GameObject m_customMenu;
 
         private PreferencesSet[] m_preferencesSets;
 
         void Start()
         {
+            ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.Show(false));
             if (
                 (m_textButtonPrefab != null) && (m_iconButtonPrefab != null)
                 && m_textButtonPrefab.GetComponent<RectTransform>()
@@ -41,7 +43,7 @@ namespace Assets.Scripts.Behaviours
             {
                 RectTransform rectTransformText = m_textButtonPrefab.GetComponent<RectTransform>();
                 RectTransform rectTransformIcon = m_iconButtonPrefab.GetComponent<RectTransform>();
-                float xOffset = (rectTransformText.rect.width * 0.5f) + (rectTransformIcon.rect.width  * 0.5f)+ m_buttonSpacing;
+                float xOffset = (rectTransformText.rect.width * 0.5f) + (rectTransformIcon.rect.width * 0.5f) + m_buttonSpacing;
                 float yOffset = rectTransformText.rect.height + m_buttonSpacing;
 
                 m_preferencesSets = PreferencesConfig.PreferencesSets;
@@ -54,28 +56,42 @@ namespace Assets.Scripts.Behaviours
                     pos.y -= yOffset;
                 }
                 button = CreateTextButton(pos, "Custom");
+                button.onClick.AddListener(() => OpenMenu(m_customMenu));
 
-                pos.x += xOffset;
+                pos.x -= xOffset;
                 //exit button does not make sense for web application
-                if (!Application.isWebPlayer)
+                if (Application.platform != RuntimePlatform.WebGLPlayer)
                 {
-                    button = CreateIconButton(pos, '\u2713'); //x
-                    button.onClick.AddListener(() => ShowMenu(m_exitMenu));
+                    button = CreateIconButton(pos, "x");
+                    button.onClick.AddListener(() => OpenMenu(m_exitMenu));
                 }
 
                 pos = new Vector3(xOffset, m_buttonTop, 0.0f);
-                button = CreateIconButton(pos, '\ue06a'); //book_alt2
-                button.onClick.AddListener(() => ShowMenu(m_HelpMenu));
+                button = CreateIconButton(pos, "book_alt2");
+                button.onClick.AddListener(() => OpenMenu(m_helpMenu));
                 pos.y -= yOffset;
-                button = CreateIconButton(pos, '\ue055'); //list
-                button.onClick.AddListener(() => ShowMenu(m_StatisticsMenu));
+                button = CreateIconButton(pos, "list");
+                button.onClick.AddListener(() => OpenMenu(m_statisticsMenu));
                 pos.y -= yOffset;
+                button = CreateIconButton(pos, "cog");
+                button.onClick.AddListener(() => OpenMenu(m_optionsMenu));
             }
             else
             {
                 Debug.LogWarning("PreferencesUI: button prefabs are not set or are not uGui buttons.");
             }
+        }
 
+        void OnGUI()
+        {
+
+            string dbg = "";
+            dbg += "\nisEditor: " + Application.isEditor;
+            dbg += "\nisMobilePlatform: " + Application.isMobilePlatform;
+            dbg += "\nisWebPlayer: " + Application.isWebPlayer;
+            dbg += "\nisConsolePlatform: " + Application.isConsolePlatform;
+            dbg += "\nplatform: " + Application.platform.ToString();
+            GUI.Label(new Rect(10, 10, 300, 250), dbg);
         }
 
         private Button CreateTextButton(Vector3 position, string name)
@@ -83,9 +99,10 @@ namespace Assets.Scripts.Behaviours
             return CreateGenericButton(position, name, m_textButtonPrefab);
         }
 
-        private Button CreateIconButton(Vector3 position, char icon)
+        private Button CreateIconButton(Vector3 position, string identifier)
         {
-            return CreateGenericButton(position, icon.ToString(), m_iconButtonPrefab);
+            string icon = IconButton.GetIconForIdentifier(identifier);
+            return CreateGenericButton(position, icon, m_iconButtonPrefab);
         }
 
         private Button CreateGenericButton(Vector3 position, string name, GameObject prefab)
@@ -114,40 +131,9 @@ namespace Assets.Scripts.Behaviours
                     {
                         Preferences.Current = set.Preferences;
                     }
-                    StartCoroutine(StartGame());
+                    LoadLevel(1);
                 }
             }
-        }
-
-        private void ExitGame()
-        {
-            ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.Hide(false));
-        }
-
-        private void ShowMenu(GameObject newMenu)
-        {
-            if (newMenu != null)
-            {
-                StartCoroutine(ToggleMenu(newMenu));
-            }
-            else
-            {
-                Debug.LogWarning("PreferencesUi: Menu reference not set.");
-            }
-        }
-
-        private IEnumerator ToggleMenu(GameObject newMenu)
-        {
-            ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.Hide(false));
-            yield return new WaitForSeconds(0.2f);
-            ExecuteEvents.Execute<IMenuEventTarget>(newMenu, null, (x, y) => x.Show(false));
-        }
-
-        private IEnumerator StartGame()
-        {
-            ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.Hide(false));
-            yield return new WaitForSeconds(0.3f);
-            SceneManager.LoadScene("level");
         }
 
     }

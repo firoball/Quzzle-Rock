@@ -48,6 +48,7 @@ namespace Assets.Scripts.Behaviours
             if (s_singleton == null)
             {
                 s_singleton = this;
+                DontDestroyOnLoad(gameObject);
 
                 if (m_standardTokenList.Length < Preferences.Current.TokenCount)
                 {

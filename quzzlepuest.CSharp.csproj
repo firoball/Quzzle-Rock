@@ -65,8 +65,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Behaviours\HelpUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\IconButtonCheck.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\LevelUI.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\EndedUI.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\CustomUI.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\DefaultUI.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\IconButton.cs" />
     <Compile Include="Assets\Scripts\Behaviours\MenuFader.cs" />
     <Compile Include="Assets\Scripts\Behaviours\PlayField.cs" />
     <Compile Include="Assets\Scripts\Behaviours\PlayFieldWatcher.cs" />
@@ -76,6 +79,8 @@
     <Compile Include="Assets\Scripts\Behaviours\ReplacementConfig.cs" />
     <Compile Include="Assets\Scripts\Behaviours\RuleSet.cs" />
     <Compile Include="Assets\Scripts\Behaviours\RuleSetSmash.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\SliderVisualizer2DUI.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\SliderVisualizerUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Token.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenConfig.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenStatusVisualizer.cs" />
@@ -94,6 +99,9 @@
     <Compile Include="Assets\Scripts\Structs\PreferencesSet.cs" />
     <Compile Include="Assets\Scripts\Structs\Replacement.cs" />
     <Compile Include="Assets\Scripts\Structs\TokenConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Import\iconic_fill.css.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
