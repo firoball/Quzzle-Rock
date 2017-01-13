@@ -3,7 +3,7 @@ using Assets.Scripts.Structs;
 
 namespace Assets.Scripts.Classes
 {
-    class SwapTester
+    public class SwapTester
     {
 
         private DataField<int> m_idField;

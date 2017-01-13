@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System;
-using Assets.Scripts.Static;
 using Assets.Scripts.Structs;
 
 namespace Assets.Scripts.Classes
@@ -30,8 +29,8 @@ namespace Assets.Scripts.Classes
         {
             m_stackSize = stackSize;
             m_debug = debug;
-            m_columnCount = Preferences.ColumnCount;
-            m_rowCount = Preferences.RowCount;
+            m_columnCount = Preferences.Current.ColumnCount;
+            m_rowCount = Preferences.Current.RowCount;
             m_positionStack = new DataFieldPosition[m_stackSize];
 
             Restart();

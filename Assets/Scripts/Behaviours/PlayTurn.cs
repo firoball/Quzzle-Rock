@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.Structs;
@@ -134,14 +135,18 @@ namespace Assets.Scripts.Behaviours
 
         private void OnGUI()
         {
+            if (GUI.Button(new Rect(10, 95, 100, 20), "Exit to Menu"))
+            {
+                SceneManager.LoadScene("levelconfig");
+            }
             if (m_ended)
             {
                 GUI.Label(new Rect(10, 70, 100, 20), "Game ended.");
-                if (GUI.Button(new Rect(10, 95, 100, 20), "New Game"))
+                if (GUI.Button(new Rect(10, 120, 100, 20), "New Game"))
                 {
                     New();
                 }
-                if (GUI.Button(new Rect(10, 120, 100, 20), "Retry"))
+                if (GUI.Button(new Rect(10, 155, 100, 20), "Retry"))
                 {
                     Retry();
                 }

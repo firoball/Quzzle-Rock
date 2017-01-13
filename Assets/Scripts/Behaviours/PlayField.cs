@@ -2,7 +2,6 @@
 using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Static;
 using Assets.Scripts.Structs;
 using Assets.Scripts.Classes;
 using Assets.Scripts.Interfaces;
@@ -169,7 +168,7 @@ namespace Assets.Scripts.Behaviours
         {
             if (s_singleton == null)
             {
-                DataFieldSize size = new DataFieldSize(Preferences.ColumnCount, Preferences.RowCount);
+                DataFieldSize size = new DataFieldSize(Preferences.Current.ColumnCount, Preferences.Current.RowCount);
                 m_fieldTokens = new DataField<GameObject>(size);
                 m_fieldTypes = new DataField<int>(size);
                 m_tokenStack = new TokenStack(m_stackSize, m_debug);
@@ -214,7 +213,7 @@ namespace Assets.Scripts.Behaviours
                 foreach (Combination combination in comboList)
                 {
                     //only replace id if more than one id is configured (this should always be the case)
-                    if ((combination.Positions.Count > 1) && (Preferences.TokenCount > 1))
+                    if ((combination.Positions.Count > 1) && (Preferences.Current.TokenCount > 1))
                     {
                         int id;
                         do

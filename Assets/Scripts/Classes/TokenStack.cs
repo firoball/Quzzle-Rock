@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
-using Assets.Scripts.Static;
 
 namespace Assets.Scripts.Classes
 {
@@ -31,8 +30,8 @@ namespace Assets.Scripts.Classes
             m_stackSize = stackSize;
             m_debug = debug;
 
-            m_columnCount = Preferences.ColumnCount;
-            m_tokenCount = Preferences.TokenCount;
+            m_columnCount = Preferences.Current.ColumnCount;
+            m_tokenCount = Preferences.Current.TokenCount;
 
             m_columnIndex = new int[m_columnCount];
             Restart();

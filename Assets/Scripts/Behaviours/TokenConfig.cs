@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System;
-using Assets.Scripts.Static;
+using Assets.Scripts.Classes;
 
 namespace Assets.Scripts.Behaviours
 {
-    class TokenConfig : MonoBehaviour
+    public class TokenConfig : MonoBehaviour
     {
         private static TokenConfig s_singleton = null;
 
@@ -49,12 +49,12 @@ namespace Assets.Scripts.Behaviours
             {
                 s_singleton = this;
 
-                if (m_standardTokenList.Length < Preferences.TokenCount)
+                if (m_standardTokenList.Length < Preferences.Current.TokenCount)
                 {
                     Debug.LogWarning("TokenConfig: Insufficient tokens defined! Configured " + m_standardTokenList.Length +
-                        ", required " + Preferences.TokenCount + ". Adjusting token count.");
+                        ", required " + Preferences.Current.TokenCount + ". Adjusting token count.");
                     //fallback. should be avoided.
-                    Preferences.TokenCount = m_standardTokenList.Length;
+                    Preferences.Current.TokenCount = m_standardTokenList.Length;
                 }
             }
             else

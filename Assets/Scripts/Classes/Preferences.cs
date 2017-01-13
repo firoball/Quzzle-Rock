@@ -1,19 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Assets.Scripts.Static
+﻿using UnityEngine;
+using System;
+namespace Assets.Scripts.Classes
 {
-    class Preferences
+    [Serializable]
+    public class Preferences
     {
-        private static int m_columnCount = 8;
-        private static int m_rowCount = 8;
-        private static int m_tokenCount = 6;
-        private static int m_moveCount = 20;
-        private static int m_targetCount = 30;
+        private static Preferences s_current = new Preferences();
 
-        public static int ColumnCount
+        [SerializeField][Range(1, 20)]
+        private int m_columnCount = 8;
+        [SerializeField][Range(1, 20)]
+        private int m_rowCount = 8;
+        [SerializeField][Range(3, 10)]
+        private int m_tokenCount = 6;
+        [SerializeField]
+        private int m_moveCount = 20;
+        [SerializeField]
+        private int m_targetCount = 60;
+
+        public int ColumnCount
         {
             get
             {
@@ -26,7 +31,7 @@ namespace Assets.Scripts.Static
             }
         }
 
-        public static int RowCount
+        public int RowCount
         {
             get
             {
@@ -39,7 +44,7 @@ namespace Assets.Scripts.Static
             }
         }
 
-        public static int TokenCount
+        public int TokenCount
         {
             get
             {
@@ -52,7 +57,7 @@ namespace Assets.Scripts.Static
             }
         }
 
-        public static int MoveCount
+        public int MoveCount
         {
             get
             {
@@ -65,7 +70,7 @@ namespace Assets.Scripts.Static
             }
         }
 
-        public static int TargetCount
+        public int TargetCount
         {
             get
             {
@@ -75,6 +80,19 @@ namespace Assets.Scripts.Static
             set
             {
                 m_targetCount = value;
+            }
+        }
+
+        public static Preferences Current
+        {
+            get
+            {
+                return s_current;
+            }
+
+            set
+            {
+                s_current = value;
             }
         }
     }
