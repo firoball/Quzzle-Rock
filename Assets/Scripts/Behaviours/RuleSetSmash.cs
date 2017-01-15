@@ -1,8 +1,10 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using Assets.Scripts.Structs;
 using Assets.Scripts.Classes;
+using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Behaviours
 {
@@ -13,6 +15,8 @@ namespace Assets.Scripts.Behaviours
         private int m_stackSize = 50;
         [SerializeField]
         private bool m_debug = false;
+        [SerializeField]
+        private GameObject m_levelHudUI;
 
         private int m_turnsLeft;
         private int m_combos;
@@ -25,22 +29,97 @@ namespace Assets.Scripts.Behaviours
 
         private const int c_specialTokenId = 100;
 
-        void Awake()
+        public int TurnsLeft
         {
-            m_positionStack = new PositionStack(m_stackSize, m_debug);
-            m_turnsMax = 1;// Preferences.Current.MoveCount;
-            m_pointsMax = Preferences.Current.TargetCount;
-            Restart();
+            get
+            {
+                return m_turnsLeft;
+            }
+
+            set
+            {
+                m_turnsLeft = value;
+                if (m_levelHudUI != null)
+                {
+                    ExecuteEvents.Execute<IHudEventTarget>(m_levelHudUI, null, (x, y) => x.OnUpdateTurns(m_turnsLeft));
+                }
+            }
         }
 
-        private void OnGUI()
+        public int Combos
         {
-            GUI.Label(new Rect(10, 10, 100, 20), "Turns left: " + m_turnsLeft);
-            GUI.Label(new Rect(10, 30, 100, 20), "Points: " + m_points + " / " + m_pointsMax);
-            if (m_combos > 0)
+            get
             {
-                GUI.Label(new Rect(10, 50, 100, 20), "Combos: " + m_combos);
+                return m_combos;
             }
+
+            set
+            {
+                m_combos = value;
+                if (m_levelHudUI != null)
+                {
+                    ExecuteEvents.Execute<IHudEventTarget>(m_levelHudUI, null, (x, y) => x.OnUpdateCombos(m_combos));
+                }
+            }
+        }
+
+        public int Points
+        {
+            get
+            {
+                return m_points;
+            }
+
+            set
+            {
+                m_points = value;
+                if (m_levelHudUI != null)
+                {
+                    ExecuteEvents.Execute<IHudEventTarget>(m_levelHudUI, null, (x, y) => x.OnUpdateScore(m_points));
+                }
+            }
+        }
+
+        public int TurnsMax
+        {
+            get
+            {
+                return m_turnsMax;
+            }
+
+            set
+            {
+                m_turnsMax = value;
+                if (m_levelHudUI != null)
+                {
+                    ExecuteEvents.Execute<IHudEventTarget>(m_levelHudUI, null, (x, y) => x.OnUpdateTurnsMax(m_turnsMax));
+                }
+            }
+        }
+
+        public int PointsMax
+        {
+            get
+            {
+                return m_pointsMax;
+            }
+
+            set
+            {
+                m_pointsMax = value;
+                if (m_levelHudUI != null)
+                {
+                    ExecuteEvents.Execute<IHudEventTarget>(m_levelHudUI, null, (x, y) => x.OnUpdateScoreMax(m_pointsMax));
+                }
+            }
+        }
+
+        void Start()
+        {
+            m_positionStack = new PositionStack(m_stackSize, m_debug);
+            TurnsMax = Preferences.Current.MoveCount;
+            PointsMax = Preferences.Current.TargetCount;
+            Restart();
         }
 
         public override void ProcessCombo(List<Combination> combinationList)
@@ -49,7 +128,7 @@ namespace Assets.Scripts.Behaviours
             {
                 if (combination.Id == c_specialTokenId)
                 {
-                    m_points = Math.Min(m_points + combination.Positions.Count, m_pointsMax);
+                    Points = Math.Min(Points + combination.Positions.Count, PointsMax);
                 }
                 if (combination.Positions.Count == 4)
                 {
@@ -60,32 +139,37 @@ namespace Assets.Scripts.Behaviours
                     m_extraTurns += 2;
                 }
             }
-            m_combos++;
+            Combos++;
         }
 
         public override void TurnStart()
         {
-            m_combos = 0;
+            Combos = 0;
             m_extraTurns = 0;
         }
 
         public override void TurnEnd()
         {
-            m_turnsLeft = Math.Min(m_turnsLeft + m_extraTurns - 1, m_turnsMax);
-            m_combos = 0;
+            TurnsLeft = Math.Min(TurnsLeft + m_extraTurns - 1, TurnsMax);
+            Combos = 0;
         }
 
         public override void Restart()
         {
-            m_turnsLeft = m_turnsMax;
-            m_points = 0;
+            TurnsLeft = TurnsMax;
+            Points = 0;
+            Combos = 0;
             m_positionStack.Restart();
         }
 
         public override bool GameLost()
         {
-            if (m_turnsLeft == 0)
+            if (TurnsLeft == 0)
             {
+                if (m_levelHudUI != null)
+                {
+                    ExecuteEvents.Execute<IHudEventTarget>(m_levelHudUI, null, (x, y) => x.OnGameEnded(false));
+                }
                 return true;
             }
             return false;
@@ -93,8 +177,12 @@ namespace Assets.Scripts.Behaviours
 
         public override bool GameWon()
         {
-            if (m_points >= m_pointsMax)
+            if (Points >= PointsMax)
             {
+                if (m_levelHudUI != null)
+                {
+                    ExecuteEvents.Execute<IHudEventTarget>(m_levelHudUI, null, (x, y) => x.OnGameEnded(true));
+                }
                 return true;
             }
             return false;
@@ -103,7 +191,7 @@ namespace Assets.Scripts.Behaviours
         public override void PlayFieldModifier()
         {
             //trigger every 4th combo
-            if ((m_combos % 4) == 0)
+            if ((Combos % 4) == 0)
             {
                 Dictionary<DataFieldPosition, int> tokenDict = new Dictionary<DataFieldPosition, int>();
                 for (int i = 0; i < 8; i++)

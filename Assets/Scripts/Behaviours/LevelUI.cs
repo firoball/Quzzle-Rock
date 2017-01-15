@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System;
 using Assets.Scripts.Interfaces;
 
@@ -8,19 +8,37 @@ namespace Assets.Scripts.Behaviours
 {
     public class LevelUI : DefaultUI
     {
+        [SerializeField]
+        private GameObject m_lockerUI;
 
-        void Update()
+        private void LockPlayField()
         {
-            if (PlayTurn.HasEnded)
+            //make sure Playfield is locked with one big invisible panel
+            if (m_lockerUI != null)
             {
-                ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.Hide(false));
+                ExecuteEvents.Execute<IMenuEventTarget>(m_lockerUI, null, (x, y) => x.OnShow(true));
             }
         }
 
-        /*public override void OpenMenu(GameObject newMenu)
+        private void UnlockPlayField()
         {
-            OpenMenu(newMenu);
-        }*/
+            //make sure Playfield is unlocked with one big invisible panel
+            if (m_lockerUI != null)
+            {
+                ExecuteEvents.Execute<IMenuEventTarget>(m_lockerUI, null, (x, y) => x.OnHide(false));
+            }
+        }
 
+        public override void OnShow(bool immediately)
+        {
+            UnlockPlayField();
+            base.OnShow(immediately);
+        }
+
+        public override void OnHide(bool immediately)
+        {
+            LockPlayField();
+            base.OnHide(immediately);
+        }
     }
 }

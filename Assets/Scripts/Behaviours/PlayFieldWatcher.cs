@@ -8,24 +8,27 @@ namespace Assets.Scripts.Behaviours
     {
         private int m_width;
         private int m_height;
+        private float m_aspect;
         private Camera m_camera;
 
-        private const float c_borderFactor = 1.1f;
+        private const float c_borderFactor = 1.2f;
 
         void Start()
         {
             m_camera = GetComponent<Camera>();
             m_width = m_camera.pixelWidth;
             m_height = m_camera.pixelHeight;
+            m_aspect = m_camera.aspect;
             SetView();
         }
 
         void Update()
         {
-            if ((m_camera.pixelWidth != m_width) || (m_camera.pixelHeight != m_height))
+            if ((m_camera.pixelWidth != m_width) || (m_camera.pixelHeight != m_height) || (m_camera.aspect != m_aspect))
             {
                 m_width = m_camera.pixelWidth;
                 m_height = m_camera.pixelHeight;
+                m_aspect = m_camera.aspect;
                 SetView();
             }
         }
@@ -49,5 +52,6 @@ namespace Assets.Scripts.Behaviours
             transform.rotation = Quaternion.identity;
             m_camera.orthographicSize = size;
         }
+
     }
 }

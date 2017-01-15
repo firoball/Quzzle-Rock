@@ -9,15 +9,15 @@ namespace Assets.Scripts.Behaviours
     {
 
         [SerializeField]
-        Slider m_columnSlider;
+        private Slider m_columnSlider;
         [SerializeField]
-        Slider m_rowSlider;
+        private Slider m_rowSlider;
         [SerializeField]
-        Slider m_turnSlider;
+        private Slider m_turnSlider;
         [SerializeField]
-        Slider m_scoreSlider;
+        private Slider m_scoreSlider;
         [SerializeField]
-        Slider m_tokenSlider;
+        private Slider m_tokenSlider;
 
         void Start()
         {

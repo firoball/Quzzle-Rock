@@ -11,22 +11,22 @@ namespace Assets.Scripts.Behaviours
     public class PlayTurn : MonoBehaviour
     {
         private static PlayTurn s_singleton;
-        private bool m_hasEnded = false;
+        private bool m_gameHasEnded = false;
 
         [SerializeField]
         private GameObject m_endedMenu;
-        /*[SerializeField]
-        private GameObject m_levelMenu;*/
+        [SerializeField]
+        private GameObject m_levelMenu;
 
         private RuleSet m_ruleSet;
 
-        public static bool HasEnded
+        public static bool GameHasEnded
         {
             get
             {
                 if (s_singleton != null)
                 {
-                    return s_singleton.m_hasEnded;
+                    return s_singleton.m_gameHasEnded;
                 }
                 else
                 {
@@ -73,23 +73,15 @@ namespace Assets.Scripts.Behaviours
 
         private void End()
         {
-            m_hasEnded = true;
+            m_gameHasEnded = true;
             Debug.Log("Game ended.");
-            if (m_endedMenu != null)
-            {
-                ExecuteEvents.Execute<IMenuEventTarget>(m_endedMenu, null, (x, y) => x.Show(false));
-            }
-            /*if (m_levelMenu != null)
-            {
-                ExecuteEvents.Execute<IMenuEventTarget>(m_levelMenu, null, (x, y) => x.Hide(false));
-            }*/
-
+            StartCoroutine(EndDelay());
         }
 
         public static void New()
         {
             s_singleton.m_ruleSet.Restart();
-            s_singleton.m_hasEnded = false;
+            s_singleton.m_gameHasEnded = false;
             PlayField.Restart(true);
             PlayField.Unlock();
         }
@@ -97,14 +89,27 @@ namespace Assets.Scripts.Behaviours
         public static void Retry()
         {
             s_singleton.m_ruleSet.Restart();
-            s_singleton.m_hasEnded = false;
+            s_singleton.m_gameHasEnded = false;
             PlayField.Restart(false);
             PlayField.Unlock();
+        }
+
+        private IEnumerator EndDelay()
+        {
+            yield return new WaitForSeconds(2.0f);
+            if (m_endedMenu != null)
+            {
+                ExecuteEvents.Execute<IMenuEventTarget>(m_endedMenu, null, (x, y) => x.OnShow(false));
+            }
         }
 
         private IEnumerator ProcessPlayField()
         {
             //take control from player
+            if (m_levelMenu != null)
+            {
+                ExecuteEvents.Execute<IMenuEventTarget>(m_levelMenu, null, (x, y) => x.OnHide(false));
+            }
             PlayField.Lock();
             yield return new WaitForSeconds(0.2f);
 
@@ -162,27 +167,12 @@ namespace Assets.Scripts.Behaviours
                 //proceed with next round
                 m_ruleSet.TurnStart();
                 PlayField.Unlock();
+                if (m_levelMenu != null)
+                {
+                    ExecuteEvents.Execute<IMenuEventTarget>(m_levelMenu, null, (x, y) => x.OnShow(false));
+                }
             }
         }
 
-        /*private void OnGUI()
-        {
-            if (GUI.Button(new Rect(10, 95, 100, 20), "Exit to Menu"))
-            {
-                SceneManager.LoadScene("levelconfig");
-            }
-            if (m_ended)
-            {
-                GUI.Label(new Rect(10, 70, 100, 20), "Game ended.");
-                if (GUI.Button(new Rect(10, 120, 100, 20), "New Game"))
-                {
-                    New();
-                }
-                if (GUI.Button(new Rect(10, 155, 100, 20), "Retry"))
-                {
-                    Retry();
-                }
-            }
-        }*/
     }
 }

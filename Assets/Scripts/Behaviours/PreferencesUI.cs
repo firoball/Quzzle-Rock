@@ -34,7 +34,8 @@ namespace Assets.Scripts.Behaviours
 
         void Start()
         {
-            ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.Show(false));
+            //ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.OnShow(false));
+            OnShow(false);
             if (
                 (m_textButtonPrefab != null) && (m_iconButtonPrefab != null)
                 && m_textButtonPrefab.GetComponent<RectTransform>()
@@ -82,7 +83,7 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        void OnGUI()
+        /*void OnGUI()
         {
 
             string dbg = "";
@@ -92,7 +93,7 @@ namespace Assets.Scripts.Behaviours
             dbg += "\nisConsolePlatform: " + Application.isConsolePlatform;
             dbg += "\nplatform: " + Application.platform.ToString();
             GUI.Label(new Rect(10, 10, 300, 250), dbg);
-        }
+        }*/
 
         private Button CreateTextButton(Vector3 position, string name)
         {

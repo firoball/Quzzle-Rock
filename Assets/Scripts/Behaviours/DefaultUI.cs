@@ -6,8 +6,16 @@ using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Behaviours
 {
-    public class DefaultUI : MonoBehaviour
+    [RequireComponent(typeof(UIFader))]
+    public class DefaultUI : MonoBehaviour, IMenuEventTarget
     {
+        UIFader m_fader;
+
+        protected virtual void Awake()
+        {
+            m_fader = GetComponent<UIFader>();
+        }
+
         public virtual void OpenMenu(GameObject newMenu)
         {
             if (newMenu != null)
@@ -26,33 +34,33 @@ namespace Assets.Scripts.Behaviours
             StartCoroutine(ExitGameDelayed());
         }
 
-        /*public void Show()
+        public virtual void OnShow(bool immediately)
         {
-            ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.Show(false));
+            m_fader.Show(immediately);
         }
 
-        public void Hide()
+        public virtual void OnHide(bool immediately)
         {
-            ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.Hide(false));
-        }*/
+            m_fader.Hide(immediately);
+        }
 
         private IEnumerator OpenMenuDelayed(GameObject newMenu)
         {
-            ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.Hide(false));
+            OnHide(false);
             yield return new WaitForSeconds(0.2f);
-            ExecuteEvents.Execute<IMenuEventTarget>(newMenu, null, (x, y) => x.Show(false));
+            ExecuteEvents.Execute<IMenuEventTarget>(newMenu, null, (x, y) => x.OnShow(false));
         }
 
         private IEnumerator LoadLevelDelayed(int sceneIndex)
         {
-            ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.Hide(false));
+            OnHide(false);
             yield return new WaitForSeconds(0.3f);
             SceneManager.LoadScene(sceneIndex);
         }
 
         private IEnumerator ExitGameDelayed()
         {
-            ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.Hide(false));
+            OnHide(false);
             yield return new WaitForSeconds(0.2f);
             Application.Quit();
             Debug.Log("Application.Quit()");

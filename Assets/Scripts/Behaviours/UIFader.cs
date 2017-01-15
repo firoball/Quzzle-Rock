@@ -4,7 +4,7 @@ using Assets.Scripts.Interfaces;
 namespace Assets.Scripts.Behaviours
 {
     [RequireComponent(typeof(CanvasGroup))]
-    class MenuFader : MonoBehaviour, IMenuEventTarget
+    class UIFader : MonoBehaviour
     {
         [SerializeField]
         private float m_fadeSpeed = 4.0f;
