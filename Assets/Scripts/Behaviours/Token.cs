@@ -25,6 +25,7 @@ namespace Assets.Scripts.Behaviours
         private float m_removeTimer;
         private float m_refTime;
         private GameObject m_marker;
+        private TokenStatus m_tokenStatus;
 
         private const float c_animationSpeed = 5.0f;
         private const float c_slowDownSpeed = 2.5f;
@@ -32,6 +33,15 @@ namespace Assets.Scripts.Behaviours
         private const float c_movementSpeed = 5.0f;
         private const float c_scalingSpeed = 5.0f;
         private const float c_removeSpeed = 500.0f;
+
+        private enum TokenStatus : int
+        {
+            HOVER = 0,
+            SWAP = 1,
+            DRAG = 2,
+            SELECT = 3,
+            UNSELECT = 4
+        }
 
         public static bool Locked
         {
@@ -54,11 +64,13 @@ namespace Assets.Scripts.Behaviours
             m_moveTimerReverse = 0.0f;
             m_removeTimer = 0.0f;
             m_refTime = Time.time;
+            m_tokenStatus = TokenStatus.UNSELECT;
         }
 
         void Start()
         {
             Transform child = transform.FindChild("SelectionMarker");
+
             if (child != null)
             {
                 m_marker = child.gameObject;
@@ -121,35 +133,77 @@ namespace Assets.Scripts.Behaviours
                 //token is being swapped
                 if (s_swappedToken1 == gameObject || s_swappedToken2 == gameObject)
                 {
-                    ExecuteEvents.Execute<ITokenStatusEventTarget>(m_marker, null, (x, y) => x.OnSwap());
+                    TriggerVisualizer(TokenStatus.SWAP);
                 }
                 // token is selected
                 else if (s_selectedToken == gameObject)
                 {
-                    ExecuteEvents.Execute<ITokenStatusEventTarget>(m_marker, null, (x, y) => x.OnSelect());
+                    TriggerVisualizer(TokenStatus.SELECT);
                 }
                 // token is being dragged
                 else if (s_draggedToken == gameObject)
                 {
-                    ExecuteEvents.Execute<ITokenStatusEventTarget>(m_marker, null, (x, y) => x.OnDrag());
+                    TriggerVisualizer(TokenStatus.DRAG);
                 }
                 // token is hovered while another token is being dragged
                 else if (s_hoveredToken == gameObject && s_draggedToken != null)
                 {
                     if (PlayField.AreNeighbours(s_hoveredToken, s_draggedToken))
                     {
-                        ExecuteEvents.Execute<ITokenStatusEventTarget>(m_marker, null, (x, y) => x.OnHover());
+                        TriggerVisualizer(TokenStatus.HOVER);
                     }
                     else
                     {
-                        ExecuteEvents.Execute<ITokenStatusEventTarget>(m_marker, null, (x, y) => x.OnUnSelect());
+                        TriggerVisualizer(TokenStatus.UNSELECT);
                     }
                 }
                 else
                 {
-                    ExecuteEvents.Execute<ITokenStatusEventTarget>(m_marker, null, (x, y) => x.OnUnSelect());
+                    TriggerVisualizer(TokenStatus.UNSELECT);
                 }
             }
+
+        }
+
+        private void TriggerVisualizer(TokenStatus newStatus)
+        {
+            if (newStatus != m_tokenStatus)
+            {
+                m_tokenStatus = newStatus;
+                switch (newStatus)
+                {
+                    case TokenStatus.HOVER:
+                        {
+                            ExecuteEvents.Execute<ITokenStatusEventTarget>(m_marker, null, (x, y) => x.OnHover());
+                            break;
+                        }
+                    case TokenStatus.SWAP:
+                        {
+                            ExecuteEvents.Execute<ITokenStatusEventTarget>(m_marker, null, (x, y) => x.OnSwap());
+                            break;
+                        }
+                    case TokenStatus.DRAG:
+                        {
+                            ExecuteEvents.Execute<ITokenStatusEventTarget>(m_marker, null, (x, y) => x.OnDrag());
+                            break;
+                        }
+                    case TokenStatus.SELECT:
+                        {
+                            ExecuteEvents.Execute<ITokenStatusEventTarget>(m_marker, null, (x, y) => x.OnSelect());
+                            break;
+                        }
+                    case TokenStatus.UNSELECT:
+                        {
+                            ExecuteEvents.Execute<ITokenStatusEventTarget>(m_marker, null, (x, y) => x.OnUnSelect());
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+            }
+
         }
 
         private void MouseEventHandler()
@@ -157,7 +211,7 @@ namespace Assets.Scripts.Behaviours
             if (
                 (s_swappedToken1 != null && s_swappedToken2 != null) ||
                 (m_removeTimer > 0.0f) || s_locked ||
-                EventSystem.current.IsPointerOverGameObject()
+                ((EventSystem.current != null) && (EventSystem.current.IsPointerOverGameObject()))
                 )
             {
                 gameObject.layer = 2; //Ignore Raycast
@@ -295,7 +349,8 @@ namespace Assets.Scripts.Behaviours
         {
             yield return new WaitForSeconds(delay);
             m_removeTimer = 1.0f;
-            Destroy(gameObject, 0.5f);
+            Destroy(gameObject, 0.6f);
+            ExecuteEvents.Execute<ITokenDestructionEventTarget>(gameObject, null, (x, y) => x.OnDestruction());
         }
     }
 }

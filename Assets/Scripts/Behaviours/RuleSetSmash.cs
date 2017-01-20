@@ -17,6 +17,10 @@ namespace Assets.Scripts.Behaviours
         private bool m_debug = false;
         [SerializeField]
         private GameObject m_levelHudUI;
+        [SerializeField]
+        private GameObject m_combo4ToolTip;
+        [SerializeField]
+        private GameObject m_combo5ToolTip;
 
         private int m_turnsLeft;
         private int m_combos;
@@ -132,10 +136,12 @@ namespace Assets.Scripts.Behaviours
                 }
                 if (combination.Positions.Count == 4)
                 {
+                    SpawnLabelForCombination(m_combo4ToolTip, combination);
                     m_extraTurns++;
                 }
                 else if(combination.Positions.Count > 4)
                 {
+                    SpawnLabelForCombination(m_combo5ToolTip, combination);
                     m_extraTurns += 2;
                 }
             }
@@ -209,5 +215,13 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
+        private void SpawnLabelForCombination(GameObject obj, Combination combination)
+        {
+            if (obj != null)
+            {
+                Vector3 center = PlayField.GetCombinationCenter(combination);
+                Instantiate(obj, center, Quaternion.identity);
+            }
+        }
     }
 }

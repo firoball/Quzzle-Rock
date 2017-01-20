@@ -12,7 +12,7 @@ namespace Assets.Scripts.Classes
         [SerializeField][Range(1, 20)]
         private int m_rowCount = 8;
         [SerializeField][Range(3, 10)]
-        private int m_tokenCount = 6;
+        private int m_tokenCount = 4;//6;
         [SerializeField]
         private int m_moveCount = 20;
         [SerializeField]

@@ -143,17 +143,18 @@ namespace Assets.Scripts.Behaviours
 
         public void OnGameEnded(bool success)
         {
+            //since this - unlike the rest of this gui - is generic, it should be handled separately
             if (m_endText != null)
             {
                 if (success)
                 {
                     m_endOriginalColor = Color.green;
-                    m_endText.text = "You won!";
+                    m_endText.text = "You won";
                 }
                 else
                 {
                     m_endOriginalColor = Color.red;
-                    m_endText.text = "You lost!";
+                    m_endText.text = "You lost";
                 }
                 m_endNoAlphaColor = new Vector4(m_endOriginalColor.r, m_endOriginalColor.g, m_endOriginalColor.b, 0.0f);
                 m_endText.color = m_endNoAlphaColor;

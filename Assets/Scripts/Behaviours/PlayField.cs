@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using Assets.Scripts.Structs;
 using Assets.Scripts.Classes;
@@ -77,6 +77,18 @@ namespace Assets.Scripts.Behaviours
             else
             {
                 return new Bounds(Vector3.zero, Vector3.one);
+            }
+        }
+
+        public static Vector3 GetCombinationCenter(Combination combination)
+        {
+            if (s_singleton != null)
+            {
+                return s_singleton.GetCombinationCenter_internal(combination);
+            }
+            else
+            {
+                return Vector3.zero;
             }
         }
 
@@ -327,6 +339,20 @@ namespace Assets.Scripts.Behaviours
             return found;
         }
 
+        private Vector3 GetCombinationCenter_internal(Combination combination)
+        {
+            Vector3 center = Vector3.zero;
+            foreach (DataFieldPosition position in combination.Positions)
+            {
+                center += TransformFieldToWorld(position);
+            }
+            if (combination.Positions.Count > 0)
+            {
+                center /= Convert.ToSingle(combination.Positions.Count);
+            }
+            return center;
+        }
+
         private Bounds GetDimension_internal()
         {
             Bounds bounds = new Bounds(Vector3.zero, Vector3.one);
@@ -495,12 +521,15 @@ namespace Assets.Scripts.Behaviours
             return timer;
         }
 
-        private void Encapsulate(GameObject gameObject, ref Bounds bounds)
+        private void Encapsulate(GameObject obj, ref Bounds bounds)
         {
-            MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
-            if (renderer != null)
+            if (obj != null)
             {
-                bounds.Encapsulate(renderer.bounds);
+                MeshRenderer renderer = obj.GetComponent<MeshRenderer>();
+                if (renderer != null)
+                {
+                    bounds.Encapsulate(renderer.bounds);
+                }
             }
         }
 

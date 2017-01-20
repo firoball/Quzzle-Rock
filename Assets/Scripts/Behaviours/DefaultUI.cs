@@ -36,12 +36,22 @@ namespace Assets.Scripts.Behaviours
 
         public virtual void OnShow(bool immediately)
         {
+            Unselect();
             m_fader.Show(immediately);
         }
 
         public virtual void OnHide(bool immediately)
         {
+            Unselect();
             m_fader.Hide(immediately);
+        }
+
+        protected void Unselect()
+        {
+            if (EventSystem.current != null)
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+            }
         }
 
         private IEnumerator OpenMenuDelayed(GameObject newMenu)

@@ -5,21 +5,19 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{76D9638A-B628-BE55-E581-5603AF869579}</ProjectGuid>
+    <ProjectGuid>{2E04E2BC-C129-ED32-9B47-B974F60A2D8C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
-    <UnityProjectType>Game:1</UnityProjectType>
+    <CompilerResponseFile></CompilerResponseFile>
+    <UnityProjectType>GamePlugins:3</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.5.0f3</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -77,46 +75,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Behaviours\BonusTextUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\CustomUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\DefaultUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\EndedUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\IconButton.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\LevelHudUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\LevelUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\PlayField.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\PlayFieldWatcher.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\PlayTurn.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\PlayfieldDecorator.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\PreferencesConfig.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\PreferencesUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\ReplacementConfig.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\RuleSet.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\RuleSetSmash.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\SliderVisualizer2DUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\SliderVisualizerUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\Token.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\TokenConfig.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\TokenDestructionVisualizer.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\TokenStatusVisualizer.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\UIFader.cs" />
-    <Compile Include="Assets\Scripts\Classes\CombinationFinder.cs" />
-    <Compile Include="Assets\Scripts\Classes\DataField.cs" />
-    <Compile Include="Assets\Scripts\Classes\PositionStack.cs" />
-    <Compile Include="Assets\Scripts\Classes\Preferences.cs" />
-    <Compile Include="Assets\Scripts\Classes\SwapTester.cs" />
-    <Compile Include="Assets\Scripts\Classes\TokenStack.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\IHudEventTarget.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\IMenuEventTarget.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\ITokenEventTarget.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\ITokenDestructionEventTarget.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\ITokenStatusEventTarget.cs" />
-    <Compile Include="Assets\Scripts\Structs\Combination.cs" />
-    <Compile Include="Assets\Scripts\Structs\DataFieldPosition.cs" />
-    <Compile Include="Assets\Scripts\Structs\DataFieldSize.cs" />
-    <Compile Include="Assets\Scripts\Structs\PreferencesSet.cs" />
-    <Compile Include="Assets\Scripts\Structs\Replacement.cs" />
-    <Compile Include="Assets\Scripts\Structs\TokenConfig.cs" />
+    <Compile Include="Assets\Standard Assets\ParticleSystems\Scripts\AfterburnerPhysicsForce.cs" />
+    <Compile Include="Assets\Standard Assets\ParticleSystems\Scripts\ExplosionFireAndDebris.cs" />
+    <Compile Include="Assets\Standard Assets\ParticleSystems\Scripts\ExplosionPhysicsForce.cs" />
+    <Compile Include="Assets\Standard Assets\ParticleSystems\Scripts\Explosive.cs" />
+    <Compile Include="Assets\Standard Assets\ParticleSystems\Scripts\ExtinguishableParticleSystem.cs" />
+    <Compile Include="Assets\Standard Assets\ParticleSystems\Scripts\FireLight.cs" />
+    <Compile Include="Assets\Standard Assets\ParticleSystems\Scripts\Hose.cs" />
+    <Compile Include="Assets\Standard Assets\ParticleSystems\Scripts\ParticleSystemMultiplier.cs" />
+    <Compile Include="Assets\Standard Assets\ParticleSystems\Scripts\SmokeParticles.cs" />
+    <Compile Include="Assets\Standard Assets\ParticleSystems\Scripts\WaterHoseParticles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Import\iconic_fill.css.txt" />
