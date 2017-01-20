@@ -8,6 +8,7 @@ using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Behaviours
 {
+    [RequireComponent(typeof(AudioSource))]
     public class RuleSetSmash : RuleSet
     {
         [SerializeField]
@@ -21,17 +22,29 @@ namespace Assets.Scripts.Behaviours
         private GameObject m_combo4ToolTip;
         [SerializeField]
         private GameObject m_combo5ToolTip;
+        [SerializeField]
+        private AudioClip m_combinationAudio;
+        [SerializeField]
+        private AudioClip m_scoreAudio;
+        [SerializeField]
+        private AudioClip m_bonusAudio;
+        [SerializeField]
+        private AudioClip m_extraTurnAudio;
 
         private int m_turnsLeft;
         private int m_combos;
         private int m_points;
         private int m_extraTurns;
-        private PositionStack m_positionStack;
-
         private int m_turnsMax;
         private int m_pointsMax;
+        private PositionStack m_positionStack;
+        private AudioSource[] m_audio;
+        private float m_audioPitch;
+
 
         private const int c_specialTokenId = 100;
+        private const float c_pitchIncrement = 0.1f;
+        private const float c_pitchMax = 2.5f;
 
         public int TurnsLeft
         {
@@ -118,34 +131,62 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
+        void Awake()
+        {
+            m_audio = GetComponents<AudioSource>();
+        }
+
         void Start()
         {
             m_positionStack = new PositionStack(m_stackSize, m_debug);
             TurnsMax = Preferences.Current.MoveCount;
             PointsMax = Preferences.Current.TargetCount;
+            m_audioPitch = 1.0f;
             Restart();
         }
 
         public override void ProcessCombo(List<Combination> combinationList)
         {
+            bool scored = false;
+            bool extraTurn = false;
             foreach (Combination combination in combinationList)
             {
                 if (combination.Id == c_specialTokenId)
                 {
                     Points = Math.Min(Points + combination.Positions.Count, PointsMax);
+                    scored = true;
                 }
                 if (combination.Positions.Count == 4)
                 {
                     SpawnLabelForCombination(m_combo4ToolTip, combination);
                     m_extraTurns++;
+                    extraTurn = true;
                 }
-                else if(combination.Positions.Count > 4)
+                else if (combination.Positions.Count > 4)
                 {
                     SpawnLabelForCombination(m_combo5ToolTip, combination);
                     m_extraTurns += 2;
+                    extraTurn = true;
                 }
             }
             Combos++;
+
+            //play sound
+            if (combinationList.Count > 0)
+            {
+                m_audio[1].pitch = m_audioPitch;
+                m_audio[1].Play();
+                m_audioPitch = Mathf.Min(m_audioPitch + c_pitchIncrement, c_pitchMax);
+            }
+            if (scored)
+            {
+                m_audio[0].PlayOneShot(m_scoreAudio);
+            }
+            if (extraTurn)
+            {
+                m_audio[0].PlayOneShot(m_extraTurnAudio);
+            }
+
         }
 
         public override void TurnStart()
@@ -158,6 +199,7 @@ namespace Assets.Scripts.Behaviours
         {
             TurnsLeft = Math.Min(TurnsLeft + m_extraTurns - 1, TurnsMax);
             Combos = 0;
+            m_audioPitch = 1.0f;
         }
 
         public override void Restart()
@@ -212,6 +254,8 @@ namespace Assets.Scripts.Behaviours
                 }
                 PlayField.CreateTokensFromDictionary(tokenDict);
                 tokenDict.Clear();
+
+                m_audio[0].PlayOneShot(m_bonusAudio);
             }
         }
 
@@ -223,5 +267,6 @@ namespace Assets.Scripts.Behaviours
                 Instantiate(obj, center, Quaternion.identity);
             }
         }
+
     }
 }

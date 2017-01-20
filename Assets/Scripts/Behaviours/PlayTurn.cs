@@ -8,6 +8,7 @@ using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Behaviours
 {
+    [RequireComponent(typeof(AudioSource))]
     public class PlayTurn : MonoBehaviour
     {
         private static PlayTurn s_singleton;
@@ -17,8 +18,13 @@ namespace Assets.Scripts.Behaviours
         private GameObject m_endedMenu;
         [SerializeField]
         private GameObject m_levelMenu;
+        [SerializeField]
+        private AudioClip m_fillAudio;
+        [SerializeField]
+        private AudioClip m_stuckAudio;
 
         private RuleSet m_ruleSet;
+        private AudioSource m_audio;
 
         public static bool GameHasEnded
         {
@@ -53,6 +59,7 @@ namespace Assets.Scripts.Behaviours
             {
                 s_singleton = this;
                 m_ruleSet = GetComponent<RuleSet>();
+                m_audio = GetComponent<AudioSource>();
                 if (m_ruleSet != null)
                 {
                     PlayField.Unlock();
@@ -130,6 +137,7 @@ namespace Assets.Scripts.Behaviours
                     {
                         yield return new WaitForSeconds(0.1f);
                         filled = PlayField.Refill();
+                        m_audio.PlayOneShot(m_fillAudio);
                     } while (!filled);
                     yield return new WaitForSeconds(0.2f);
                     m_ruleSet.PlayFieldModifier();
@@ -160,6 +168,7 @@ namespace Assets.Scripts.Behaviours
                 {
                     //create new playfield
                     float clearDelay = PlayField.Clear();
+                    m_audio.PlayOneShot(m_stuckAudio);
                     yield return new WaitForSeconds(clearDelay + 0.2f);
                     PlayField.Populate();
                 }

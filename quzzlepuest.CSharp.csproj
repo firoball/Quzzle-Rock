@@ -97,6 +97,7 @@
     <Compile Include="Assets\Scripts\Behaviours\SliderVisualizerUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Token.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenConfig.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\TokenMorphVisualizer.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenDestructionVisualizer.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenStatusVisualizer.cs" />
     <Compile Include="Assets\Scripts\Behaviours\UIFader.cs" />
@@ -108,8 +109,8 @@
     <Compile Include="Assets\Scripts\Classes\TokenStack.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IHudEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IMenuEventTarget.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\ITokenEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ITokenDestructionEventTarget.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\ITokenEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ITokenStatusEventTarget.cs" />
     <Compile Include="Assets\Scripts\Structs\Combination.cs" />
     <Compile Include="Assets\Scripts\Structs\DataFieldPosition.cs" />
