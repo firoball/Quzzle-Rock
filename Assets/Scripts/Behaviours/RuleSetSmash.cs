@@ -40,11 +40,15 @@ namespace Assets.Scripts.Behaviours
         private PositionStack m_positionStack;
         private AudioSource[] m_audio;
         private float m_audioPitch;
+        private float m_shakeIntensity;
 
 
         private const int c_specialTokenId = 100;
         private const float c_pitchIncrement = 0.1f;
         private const float c_pitchMax = 2.5f;
+        private const float c_defaultShakeIntensity = 0.5f;
+        private const float c_shakeIntensityIncrement = 0.2f;
+        private const float c_shakeIntensityMaximum = 1.7f;
 
         public int TurnsLeft
         {
@@ -142,6 +146,7 @@ namespace Assets.Scripts.Behaviours
             TurnsMax = Preferences.Current.MoveCount;
             PointsMax = Preferences.Current.TargetCount;
             m_audioPitch = 1.0f;
+            m_shakeIntensity = c_defaultShakeIntensity;
             Restart();
         }
 
@@ -170,7 +175,6 @@ namespace Assets.Scripts.Behaviours
                 }
             }
             Combos++;
-
             //play sound
             if (combinationList.Count > 0)
             {
@@ -181,7 +185,18 @@ namespace Assets.Scripts.Behaviours
             if (scored)
             {
                 m_audio[0].PlayOneShot(m_scoreAudio);
+                if (Camera.main != null)
+                {
+                    ExecuteEvents.Execute<ICameraShakeTarget>(Camera.main.gameObject, null, (x, y) => x.OnShake(m_shakeIntensity));
+                    m_shakeIntensity = Math.Min(m_shakeIntensity + c_shakeIntensityIncrement, c_shakeIntensityMaximum);
+                }
+
             }
+            else
+            {
+                m_shakeIntensity = c_defaultShakeIntensity;
+            }
+
             if (extraTurn)
             {
                 m_audio[0].PlayOneShot(m_extraTurnAudio);
@@ -193,20 +208,25 @@ namespace Assets.Scripts.Behaviours
         {
             Combos = 0;
             m_extraTurns = 0;
+            m_audioPitch = 1.0f;
+            m_shakeIntensity = c_defaultShakeIntensity;
         }
 
         public override void TurnEnd()
         {
             TurnsLeft = Math.Min(TurnsLeft + m_extraTurns - 1, TurnsMax);
             Combos = 0;
-            m_audioPitch = 1.0f;
+//            m_audioPitch = 1.0f;
+//            m_shakeIntensity = c_defaultShakeIntensity;
         }
 
         public override void Restart()
         {
             TurnsLeft = TurnsMax;
             Points = 0;
-            Combos = 0;
+//            Combos = 0;
+//            m_audioPitch = 1.0f;
+ //           m_shakeIntensity = c_defaultShakeIntensity;
             m_positionStack.Restart();
         }
 

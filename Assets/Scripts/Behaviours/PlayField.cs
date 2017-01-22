@@ -240,7 +240,10 @@ namespace Assets.Scripts.Behaviours
                 iterations++;
             }
 
-            Debug.Log("Populate: " + iterations + " iterations performed.");
+            if (m_debug)
+            {
+                Debug.Log("Populate: " + iterations + " iterations performed.");
+            }
         }
 
         private void SpawnTokens()

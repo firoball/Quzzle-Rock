@@ -81,13 +81,13 @@ namespace Assets.Scripts.Behaviours
         private void End()
         {
             m_gameHasEnded = true;
-            Debug.Log("Game ended.");
             StartCoroutine(EndDelay());
         }
 
         public static void New()
         {
             s_singleton.m_ruleSet.Restart();
+            s_singleton.m_ruleSet.TurnStart();
             s_singleton.m_gameHasEnded = false;
             PlayField.Restart(true);
             PlayField.Unlock();
@@ -96,6 +96,7 @@ namespace Assets.Scripts.Behaviours
         public static void Retry()
         {
             s_singleton.m_ruleSet.Restart();
+            s_singleton.m_ruleSet.TurnStart();
             s_singleton.m_gameHasEnded = false;
             PlayField.Restart(false);
             PlayField.Unlock();

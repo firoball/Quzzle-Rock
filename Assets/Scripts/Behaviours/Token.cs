@@ -29,7 +29,7 @@ namespace Assets.Scripts.Behaviours
 
         private const float c_animationSpeed = 5.0f;
         private const float c_slowDownSpeed = 2.5f;
-        private const float c_animationAngle = 10.0f;
+        private const float c_animationAngle = 20.0f;
         private const float c_movementSpeed = 5.0f;
         private const float c_scalingSpeed = 5.0f;
         private const float c_removeSpeed = 500.0f;
