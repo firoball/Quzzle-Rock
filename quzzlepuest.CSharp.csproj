@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.5.0f3</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -52,9 +54,6 @@
     <Reference Include="UnityEngine">
       <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Advertisements.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
@@ -70,9 +69,6 @@
     <Reference Include="UnityEngine.HoloLens">
       <HintPath>Library\UnityAssemblies\UnityEngine.HoloLens.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Purchasing">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Purchasing.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.VR">
       <HintPath>Library\UnityAssemblies\UnityEngine.VR.dll</HintPath>
     </Reference>
@@ -85,10 +81,12 @@
     <Compile Include="Assets\Scripts\Behaviours\CustomUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\DefaultUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\EndedUI.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\EventTest.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\FPSDisplay.cs" />
     <Compile Include="Assets\Scripts\Behaviours\IconButton.cs" />
     <Compile Include="Assets\Scripts\Behaviours\LevelHudUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\LevelUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\PlayField.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\PlayFieldUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\PlayFieldWatcher.cs" />
     <Compile Include="Assets\Scripts\Behaviours\PlayTurn.cs" />
     <Compile Include="Assets\Scripts\Behaviours\PlayfieldDecorator.cs" />
@@ -99,9 +97,9 @@
     <Compile Include="Assets\Scripts\Behaviours\RuleSetSmash.cs" />
     <Compile Include="Assets\Scripts\Behaviours\SliderVisualizer2DUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\SliderVisualizerUI.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\TokenAnimator.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Token.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenConfig.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\TokenDestructionVisualizer.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenMorphVisualizer.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenStatusVisualizer.cs" />
     <Compile Include="Assets\Scripts\Behaviours\UIFader.cs" />
@@ -114,7 +112,6 @@
     <Compile Include="Assets\Scripts\Interfaces\ICameraShakeTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IHudEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IMenuEventTarget.cs" />
-    <Compile Include="Assets\Scripts\Interfaces\ITokenDestructionEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ITokenEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ITokenStatusEventTarget.cs" />
     <Compile Include="Assets\Scripts\Structs\Combination.cs" />

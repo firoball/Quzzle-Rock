@@ -81,6 +81,7 @@ namespace Assets.Scripts.Behaviours
         private void End()
         {
             m_gameHasEnded = true;
+            PlayField.Lock();
             StartCoroutine(EndDelay());
         }
 
@@ -183,6 +184,5 @@ namespace Assets.Scripts.Behaviours
                 }
             }
         }
-
     }
 }
