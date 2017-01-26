@@ -3,7 +3,7 @@
 namespace Assets.Scripts.Behaviours
 {
     [RequireComponent(typeof(ParticleSystem))]
-    public class PlayfieldDecorator : MonoBehaviour
+    public class PlayFieldDecorator : MonoBehaviour
     {
         private ParticleSystem m_particles;
         private Bounds m_bounds;

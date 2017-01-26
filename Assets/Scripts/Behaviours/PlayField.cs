@@ -293,6 +293,11 @@ namespace Assets.Scripts.Behaviours
 
                     PlayTurn.PlayerDone();
                     allowSwap = true;
+                    AudioManager.Play("valid swap");
+                }
+                else
+                {
+                    AudioManager.Play("invalid swap");
                 }
             }
 

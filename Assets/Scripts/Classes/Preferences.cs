@@ -14,7 +14,7 @@ namespace Assets.Scripts.Classes
         [SerializeField][Range(3, 10)]
         private int m_tokenCount = 4;//6;
         [SerializeField]
-        private int m_moveCount = 20;
+        private int m_moveCount = 2;//20;
         [SerializeField]
         private int m_targetCount = 60;
 

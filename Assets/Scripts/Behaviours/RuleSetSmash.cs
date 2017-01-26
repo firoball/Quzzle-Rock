@@ -24,12 +24,6 @@ namespace Assets.Scripts.Behaviours
         private GameObject m_combo5ToolTip;
         [SerializeField]
         private AudioClip m_combinationAudio;
-        [SerializeField]
-        private AudioClip m_scoreAudio;
-        [SerializeField]
-        private AudioClip m_bonusAudio;
-        [SerializeField]
-        private AudioClip m_extraTurnAudio;
 
         private int m_turnsLeft;
         private int m_combos;
@@ -38,10 +32,9 @@ namespace Assets.Scripts.Behaviours
         private int m_turnsMax;
         private int m_pointsMax;
         private PositionStack m_positionStack;
-        private AudioSource[] m_audio;
+        private AudioSource m_audio;
         private float m_audioPitch;
         private float m_shakeIntensity;
-
 
         private const int c_specialTokenId = 100;
         private const float c_pitchIncrement = 0.1f;
@@ -137,7 +130,7 @@ namespace Assets.Scripts.Behaviours
 
         void Awake()
         {
-            m_audio = GetComponents<AudioSource>();
+            m_audio = GetComponent<AudioSource>();
         }
 
         void Start()
@@ -178,13 +171,13 @@ namespace Assets.Scripts.Behaviours
             //play sound
             if (combinationList.Count > 0)
             {
-                m_audio[1].pitch = m_audioPitch;
-                m_audio[1].Play();
+                m_audio.pitch = m_audioPitch;
+                m_audio.Play();
                 m_audioPitch = Mathf.Min(m_audioPitch + c_pitchIncrement, c_pitchMax);
             }
             if (scored)
             {
-                m_audio[0].PlayOneShot(m_scoreAudio);
+                AudioManager.Play("score");
                 if (Camera.main != null)
                 {
                     ExecuteEvents.Execute<ICameraShakeTarget>(Camera.main.gameObject, null, (x, y) => x.OnShake(m_shakeIntensity));
@@ -199,7 +192,7 @@ namespace Assets.Scripts.Behaviours
 
             if (extraTurn)
             {
-                m_audio[0].PlayOneShot(m_extraTurnAudio);
+                AudioManager.Play("extra turn");
             }
 
         }
@@ -216,17 +209,12 @@ namespace Assets.Scripts.Behaviours
         {
             TurnsLeft = Math.Min(TurnsLeft + m_extraTurns - 1, TurnsMax);
             Combos = 0;
-//            m_audioPitch = 1.0f;
-//            m_shakeIntensity = c_defaultShakeIntensity;
         }
 
         public override void Restart()
         {
             TurnsLeft = TurnsMax;
             Points = 0;
-//            Combos = 0;
-//            m_audioPitch = 1.0f;
- //           m_shakeIntensity = c_defaultShakeIntensity;
             m_positionStack.Restart();
         }
 
@@ -234,10 +222,6 @@ namespace Assets.Scripts.Behaviours
         {
             if (TurnsLeft == 0)
             {
-                if (m_levelHudUI != null)
-                {
-                    ExecuteEvents.Execute<IHudEventTarget>(m_levelHudUI, null, (x, y) => x.OnGameEnded(false));
-                }
                 return true;
             }
             return false;
@@ -247,10 +231,6 @@ namespace Assets.Scripts.Behaviours
         {
             if (Points >= PointsMax)
             {
-                if (m_levelHudUI != null)
-                {
-                    ExecuteEvents.Execute<IHudEventTarget>(m_levelHudUI, null, (x, y) => x.OnGameEnded(true));
-                }
                 return true;
             }
             return false;
@@ -275,7 +255,8 @@ namespace Assets.Scripts.Behaviours
                 PlayField.CreateTokensFromDictionary(tokenDict);
                 tokenDict.Clear();
 
-                m_audio[0].PlayOneShot(m_bonusAudio);
+                AudioManager.Play("bonus");
+
             }
         }
 

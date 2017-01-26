@@ -18,8 +18,6 @@ namespace Assets.Scripts.Behaviours
         private Text m_scoreText;
         [SerializeField]
         private Text m_comboText;
-        [SerializeField]
-        private Text m_endText;
 
 
         private float m_turnsWidth;
@@ -27,9 +25,6 @@ namespace Assets.Scripts.Behaviours
         private float m_comboFadeTimer;
         private Color m_comboOriginalColor;
         private Color m_comboNoAlphaColor;
-        private float m_endFadeTimer;
-        private Color m_endOriginalColor;
-        private Color m_endNoAlphaColor;
 
         private int m_combos;
         private int m_turns;
@@ -57,10 +52,6 @@ namespace Assets.Scripts.Behaviours
                 m_comboNoAlphaColor = new Vector4 (m_comboOriginalColor.r, m_comboOriginalColor.g, m_comboOriginalColor.b, 0.0f);
                 m_comboText.color = m_comboNoAlphaColor;
             }
-            if (m_endText != null)
-            {
-                m_endText.color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-            }
         }
 
         void Update()
@@ -69,11 +60,6 @@ namespace Assets.Scripts.Behaviours
             {
                 m_comboFadeTimer = Mathf.Max(m_comboFadeTimer - c_combofadeSpeed * Time.deltaTime, 0.0f);
                 m_comboText.color = Color.Lerp(m_comboNoAlphaColor, m_comboOriginalColor, m_comboFadeTimer);
-            }
-            if (m_endFadeTimer > 0.0f)
-            {
-                m_endFadeTimer = Mathf.Max(m_endFadeTimer - c_endfadeSpeed * Time.deltaTime, 0.0f);
-                m_endText.color = Color.Lerp(m_endNoAlphaColor, m_endOriginalColor, m_endFadeTimer);
             }
         }
 
@@ -141,25 +127,5 @@ namespace Assets.Scripts.Behaviours
             UpdateCombos();
         }
 
-        public void OnGameEnded(bool success)
-        {
-            //since this - unlike the rest of this gui - is generic, it should be handled separately
-            if (m_endText != null)
-            {
-                if (success)
-                {
-                    m_endOriginalColor = Color.green;
-                    m_endText.text = "You won";
-                }
-                else
-                {
-                    m_endOriginalColor = Color.red;
-                    m_endText.text = "You lost";
-                }
-                m_endNoAlphaColor = new Vector4(m_endOriginalColor.r, m_endOriginalColor.g, m_endOriginalColor.b, 0.0f);
-                m_endText.color = m_endNoAlphaColor;
-                m_endFadeTimer = 1.0f;
-            }
-        }
     }
 }

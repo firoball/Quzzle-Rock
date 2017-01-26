@@ -22,16 +22,19 @@ namespace Assets.Scripts.Behaviours
             {
                 StartCoroutine(OpenMenuDelayed(newMenu));
             }
+            AudioManager.Play("button click");
         }
 
         public virtual void LoadLevel(int sceneIndex)
         {
             StartCoroutine(LoadLevelDelayed(sceneIndex));
+            AudioManager.Play("button click");
         }
 
         public virtual void ExitGame()
         {
             StartCoroutine(ExitGameDelayed());
+            AudioManager.Play("button click");
         }
 
         public virtual void OnShow(bool immediately)
