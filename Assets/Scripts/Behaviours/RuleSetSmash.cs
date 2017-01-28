@@ -22,8 +22,6 @@ namespace Assets.Scripts.Behaviours
         private GameObject m_combo4ToolTip;
         [SerializeField]
         private GameObject m_combo5ToolTip;
-        [SerializeField]
-        private AudioClip m_combinationAudio;
 
         private int m_turnsLeft;
         private int m_combos;
@@ -37,8 +35,8 @@ namespace Assets.Scripts.Behaviours
         private float m_shakeIntensity;
 
         private const int c_specialTokenId = 100;
-        private const float c_pitchIncrement = 0.1f;
-        private const float c_pitchMax = 2.5f;
+        private const float c_pitchIncrement = /*0.07f;*/0.1f;
+        private const float c_pitchMax = /*2.0f;*/2.5f;
         private const float c_defaultShakeIntensity = 0.5f;
         private const float c_shakeIntensityIncrement = 0.2f;
         private const float c_shakeIntensityMaximum = 1.7f;
