@@ -70,7 +70,7 @@ namespace Assets.Scripts.Behaviours
             }
             else
             {
-                Debug.LogWarning("PlayTurn: Multiple instances detected. Destroying...");
+                Debug.Log("PlayTurn: Multiple instances detected. Destroying...");
                 Destroy(this);
             }
         }
@@ -103,21 +103,16 @@ namespace Assets.Scripts.Behaviours
         private IEnumerator EndDelay()
         {
             yield return new WaitForSeconds(3.0f);
-            if (m_endedMenu != null)
-            {
-                ExecuteEvents.Execute<IMenuEventTarget>(m_endedMenu, null, (x, y) => x.OnShow(false));
-            }
+            ExecuteEvents.Execute<IMenuEventTarget>(m_endedMenu, null, (x, y) => x.OnShow(false));
         }
 
         private IEnumerator ProcessPlayField()
         {
             //take control from player
-            if (m_levelMenu != null)
-            {
-                ExecuteEvents.Execute<IMenuEventTarget>(m_levelMenu, null, (x, y) => x.OnHide(false));
-            }
+            ExecuteEvents.Execute<IMenuEventTarget>(m_levelMenu, null, (x, y) => x.OnHide(false));
             PlayField.Lock();
             yield return new WaitForSeconds(0.2f);
+            m_ruleSet.PlayerDone();
 
             //Resolve all combinations unitl no more are found
             bool combo = false;
@@ -177,10 +172,7 @@ namespace Assets.Scripts.Behaviours
                 //proceed with next round
                 m_ruleSet.TurnStart();
                 PlayField.Unlock();
-                if (m_levelMenu != null)
-                {
-                    ExecuteEvents.Execute<IMenuEventTarget>(m_levelMenu, null, (x, y) => x.OnShow(false));
-                }
+                ExecuteEvents.Execute<IMenuEventTarget>(m_levelMenu, null, (x, y) => x.OnShow(false));
             }
         }
 
@@ -191,5 +183,6 @@ namespace Assets.Scripts.Behaviours
                 Instantiate(obj, Vector3.zero, Quaternion.identity);
             }
         }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 using Assets.Scripts.Interfaces;
@@ -8,20 +9,24 @@ namespace Assets.Scripts.Behaviours
     public class LevelHudUI : DefaultUI, IHudEventTarget
     {
 
-        [SerializeField]
+        /*[SerializeField]
         private RectTransform m_turnsGauge;
         [SerializeField]
         private RectTransform m_scoreGauge;
         [SerializeField]
         private Text m_turnsText;
         [SerializeField]
-        private Text m_scoreText;
+        private Text m_scoreText;*/
         [SerializeField]
         private Text m_comboText;
+        [SerializeField]
+        private GameObject m_turnsGauge;
+        [SerializeField]
+        private GameObject m_scoreGauge;
 
 
-        private float m_turnsWidth;
-        private float m_scoreWidth;
+        //private float m_turnsWidth;
+        //private float m_scoreWidth;
         private float m_comboFadeTimer;
         private Color m_comboOriginalColor;
         private Color m_comboNoAlphaColor;
@@ -38,14 +43,14 @@ namespace Assets.Scripts.Behaviours
         protected override void Awake()
         {
             base.Awake();
-            if (m_turnsGauge != null)
+            /*if (m_turnsGauge != null)
             {
                 m_turnsWidth = m_turnsGauge.sizeDelta.x;
             }
             if (m_scoreGauge != null)
             {
                 m_scoreWidth = m_scoreGauge.sizeDelta.x;
-            }
+            }*/
             if (m_comboText != null)
             {
                 m_comboOriginalColor = m_comboText.color;
@@ -63,7 +68,7 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        private void UpdateTurns()
+        /*private void UpdateTurns()
         {
             if ((m_turnsGauge != null) && (m_turnsText != null))
             {
@@ -81,7 +86,7 @@ namespace Assets.Scripts.Behaviours
                 m_scoreGauge.sizeDelta = new Vector2(width, m_scoreGauge.sizeDelta.y);
                 m_scoreText.text = m_score + "/" + m_scoreMax;
             }
-        }
+        }*/
 
         private void UpdateCombos()
         {
@@ -100,25 +105,29 @@ namespace Assets.Scripts.Behaviours
         public void OnUpdateScore(int score)
         {
             m_score = score;
-            UpdateScore();
+            //UpdateScore();
+            ExecuteEvents.Execute<IGaugeEventTarget>(m_scoreGauge, null, (x, y) => x.OnUpdate(m_score, m_scoreMax));
         }
 
         public void OnUpdateScoreMax(int scoreMax)
         {
             m_scoreMax = scoreMax;
-            UpdateScore();
+            //UpdateScore();
+            ExecuteEvents.Execute<IGaugeEventTarget>(m_scoreGauge, null, (x, y) => x.OnUpdate(m_score, m_scoreMax));
         }
 
         public void OnUpdateTurns(int turns)
         {
             m_turns = turns;
-            UpdateTurns();
+            //UpdateTurns();
+            ExecuteEvents.Execute<IGaugeEventTarget>(m_turnsGauge, null, (x, y) => x.OnUpdate(m_turns, m_turnsMax));
         }
 
         public void OnUpdateTurnsMax(int turnsMax)
         {
             m_turnsMax = turnsMax;
-            UpdateTurns();
+            //UpdateTurns();
+            ExecuteEvents.Execute<IGaugeEventTarget>(m_turnsGauge, null, (x, y) => x.OnUpdate(m_turns, m_turnsMax));
         }
 
         public void OnUpdateCombos(int combos)

@@ -6,6 +6,7 @@ namespace Assets.Scripts.Classes
     public class Preferences
     {
         private static Preferences s_current = new Preferences();
+        private static Preferences s_custom = null;
 
         [SerializeField][Range(1, 20)]
         private int m_columnCount = 8;
@@ -14,7 +15,7 @@ namespace Assets.Scripts.Classes
         [SerializeField][Range(3, 10)]
         private int m_tokenCount = 4;//6;
         [SerializeField]
-        private int m_moveCount = 2;//20;
+        private int m_moveCount = 7;//20;
         [SerializeField]
         private int m_targetCount = 60;
 
@@ -93,6 +94,19 @@ namespace Assets.Scripts.Classes
             set
             {
                 s_current = value;
+            }
+        }
+
+        public static Preferences Custom
+        {
+            get
+            {
+                return s_custom;
+            }
+
+            set
+            {
+                s_custom = value;
             }
         }
     }

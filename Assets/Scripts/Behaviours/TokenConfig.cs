@@ -60,7 +60,7 @@ namespace Assets.Scripts.Behaviours
             }
             else
             {
-                Debug.LogWarning("TokenConfig: Multiple instanced detected. Destroying...");
+                Debug.Log("TokenConfig: Multiple instances detected. Destroying...");
                 Destroy(this);
             }
         }

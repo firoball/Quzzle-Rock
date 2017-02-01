@@ -26,7 +26,7 @@ namespace Assets.Scripts.Behaviours
             }
             else
             {
-                Debug.LogWarning("AudioManager: Multiple instances detected. Destroying...");
+                Debug.Log("AudioManager: Multiple instances detected. Destroying...");
                 Destroy(this);
             }
 

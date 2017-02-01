@@ -25,18 +25,25 @@ namespace Assets.Scripts.Behaviours
         private float m_scaleSpeed = 0.3f;
         [SerializeField]
         private Vector3 m_targetScale = Vector3.one;
+        [SerializeField]
+        private bool m_scaleWithPlayField = true;
 
         void Awake()
         {
             m_group = GetComponent<CanvasGroup>();
             m_transform = GetComponent<RectTransform>();
-            m_enableFade = false;
-            m_scaleFactor = 0.0f;
-            m_originalScale = transform.localScale;
         }
 
         void Start()
         {
+            m_enableFade = false;
+            m_scaleFactor = 0.0f;
+            if (!m_scaleWithPlayField)
+            {
+                Bounds size = PlayField.GetDimension();
+                transform.localScale = Vector3.Scale(transform.localScale, size.extents / 5.1f);
+            }
+            m_originalScale = transform.localScale;
             StartCoroutine(WaitForFade());
         }
 

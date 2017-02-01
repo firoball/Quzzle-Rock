@@ -191,7 +191,7 @@ namespace Assets.Scripts.Behaviours
             }
             else
             {
-                Debug.LogWarning("PlayField: Multiple instances detected. Destroying...");
+                Debug.Log("PlayField: Multiple instances detected. Destroying...");
                 Destroy(this);
             }
         }

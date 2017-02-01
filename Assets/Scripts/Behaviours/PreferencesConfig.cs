@@ -43,7 +43,7 @@ namespace Assets.Scripts.Behaviours
             }
             else
             {
-                Debug.LogWarning("PreferencesConfig: Multiple instanced detected. Destroying...");
+                Debug.Log("PreferencesConfig: Multiple instances detected. Destroying...");
                 Destroy(this);
             }
         }

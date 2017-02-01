@@ -13,17 +13,22 @@ namespace Assets.Scripts.Behaviours
 
         public virtual void ProcessCombo(List<Combination> combinationList)
         {
-            Debug.LogWarning("RuleSet: ProcessComboStart not implemented.");
+            Debug.LogWarning("RuleSet: ProcessCombo not implemented.");
+        }
+
+        public virtual void PlayerDone()
+        {
+            Debug.LogWarning("RuleSet: PlayerDone not implemented.");
         }
 
         public virtual void TurnStart()
         {
-            Debug.LogWarning("RuleSet: Next not implemented.");
+            Debug.LogWarning("RuleSet: TurnStart not implemented.");
         }
 
         public virtual void TurnEnd()
         {
-            Debug.LogWarning("RuleSet: PlayFieldDone not implemented.");
+            Debug.LogWarning("RuleSet: TurnEnd not implemented.");
         }
 
         public virtual bool GameWon()

@@ -9,30 +9,48 @@ namespace Assets.Scripts.Behaviours
     {
 
         [SerializeField]
-        private Slider m_columnSlider;
+        private SliderVisualizer2DUI m_fieldSliderUI;
         [SerializeField]
-        private Slider m_rowSlider;
+        private SliderVisualizerUI m_turnSliderUI;
         [SerializeField]
-        private Slider m_turnSlider;
+        private SliderVisualizerUI m_scoreSliderUI;
         [SerializeField]
-        private Slider m_scoreSlider;
-        [SerializeField]
-        private Slider m_tokenSlider;
+        private SliderVisualizerUI m_tokenSliderUI;
 
         void Start()
         {
-            //adjust token slider range to configured token count
-            if (m_tokenSlider != null)
+            if (
+                (m_fieldSliderUI == null)
+                || (m_turnSliderUI == null) || (m_scoreSliderUI == null) || (m_tokenSliderUI == null)
+                )
             {
-                m_tokenSlider.maxValue = Convert.ToSingle(TokenConfig.StandardToken.Length);
+                Debug.LogWarning("CustomUI: Slider references not set.");
+                return;
+            }
+
+            //adjust token slider range to configured token count
+            if (m_tokenSliderUI != null)
+            {
+                Slider tokenSlider = m_tokenSliderUI.Slider;
+                tokenSlider.maxValue = Convert.ToSingle(TokenConfig.StandardToken.Length);
+            }
+
+            if (Preferences.Custom != null)
+            {
+                Preferences preferences = Preferences.Custom;
+                m_fieldSliderUI.SetValueHorInt(preferences.ColumnCount);
+                m_fieldSliderUI.SetValueVertInt(preferences.RowCount);
+                m_turnSliderUI.SetValueInt(preferences.MoveCount);
+                m_scoreSliderUI.SetValueInt(preferences.TargetCount);
+                m_tokenSliderUI.SetValueInt(preferences.TokenCount);
             }
         }
 
         public void Ok()
         {
             if (
-                (m_columnSlider == null) || (m_rowSlider == null)
-                || (m_turnSlider == null) || (m_scoreSlider == null) || (m_tokenSlider == null)
+                (m_fieldSliderUI == null)
+                || (m_turnSliderUI == null) || (m_scoreSliderUI == null) || (m_tokenSliderUI == null)
                 )
             {
                 Debug.LogWarning("CustomUI: Slider references not set.");
@@ -40,13 +58,14 @@ namespace Assets.Scripts.Behaviours
             }
 
             Preferences preferences = new Preferences();
-            preferences.ColumnCount = Convert.ToInt32(m_columnSlider.value);
-            preferences.RowCount = Convert.ToInt32(m_rowSlider.value);
-            preferences.MoveCount = Convert.ToInt32(m_turnSlider.value);
-            preferences.TargetCount = Convert.ToInt32(m_scoreSlider.value);
-            preferences.TokenCount = Convert.ToInt32(m_tokenSlider.value);
+            preferences.ColumnCount = m_fieldSliderUI.GetValueHorInt();
+            preferences.RowCount = m_fieldSliderUI.GetValueVertInt();
+            preferences.MoveCount = m_turnSliderUI.GetValueInt();
+            preferences.TargetCount = m_scoreSliderUI.GetValueInt();
+            preferences.TokenCount = m_tokenSliderUI.GetValueInt();
 
             Preferences.Current = preferences;
+            Preferences.Custom = preferences;
             LoadLevel(1);
         }
 

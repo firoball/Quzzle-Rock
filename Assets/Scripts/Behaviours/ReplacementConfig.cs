@@ -62,7 +62,7 @@ namespace Assets.Scripts.Behaviours
             }
             else
             {
-                Debug.LogWarning("ReplacementConfig: Multiple instanced detected. Destroying...");
+                Debug.Log("ReplacementConfig: Multiple instances detected. Destroying...");
                 Destroy(this);
             }
 
