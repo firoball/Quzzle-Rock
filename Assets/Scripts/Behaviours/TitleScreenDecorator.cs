@@ -50,7 +50,6 @@ namespace Assets.Scripts.Behaviours
         private void UpdatePosition()
         {
             float width = GetWidth();
-            Debug.Log(width);
             Vector3 pixelPos;
             if (m_alignLeft)
             {
@@ -66,7 +65,6 @@ namespace Assets.Scripts.Behaviours
             }
             Vector3 worldPos = m_camera.ScreenToWorldPoint(pixelPos);
             worldPos.z = 0;
-            Debug.Log(worldPos);
             if (m_alignLeft)
             {
                 worldPos.x = Mathf.Min(worldPos.x,  -(m_distanceFromCenter + width));

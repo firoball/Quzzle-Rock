@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Collections;
+using Assets.Scripts.Interfaces;
 
 [RequireComponent(typeof(Dropdown))]
-public class QualityDropdownUI : MonoBehaviour
+public class QualityDropdownUI : MonoBehaviour, IOptionEventTarget
 {
     private Dropdown m_dropdown;
+    private int m_qualityLevel;
+    private int m_lastQualitylevel;
 
     void Start()
     {
@@ -13,7 +17,7 @@ public class QualityDropdownUI : MonoBehaviour
         m_dropdown.ClearOptions();
 
         string[] names = QualitySettings.names;
-        int qualityLevel = QualitySettings.GetQualityLevel();
+        m_lastQualitylevel = QualitySettings.GetQualityLevel();
         List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
         for (int i = 0; i < names.Length; i++)
         {
@@ -21,7 +25,29 @@ public class QualityDropdownUI : MonoBehaviour
             options.Add(data);
         }
         m_dropdown.AddOptions(options);
-        m_dropdown.value = qualityLevel;
+        m_dropdown.onValueChanged.AddListener((x) => OnChange(x));
+        m_dropdown.value = m_lastQualitylevel;
     }
 
+    public void OnChange(int value)
+    {
+        m_qualityLevel = value;
+    }
+
+    public void OnConfirm()
+    {
+        QualitySettings.SetQualityLevel(m_qualityLevel);
+        m_lastQualitylevel = m_qualityLevel;
+    }
+
+    public void OnAbort()
+    {
+        StartCoroutine(OnAbortDelayed());
+    }
+
+    private IEnumerator OnAbortDelayed()
+    {
+        yield return new WaitForSeconds(0.3f);
+        m_dropdown.value = m_lastQualitylevel;
+    }
 }

@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\Behaviours\CustomUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\DefaultUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\DummyTokenDropper.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\OptionsUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\EndedUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\EventTest.cs" />
     <Compile Include="Assets\Scripts\Behaviours\FPSDisplay.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Assets\Scripts\Behaviours\RuleSet.cs" />
     <Compile Include="Assets\Scripts\Behaviours\RuleSetSmash.cs" />
     <Compile Include="Assets\Scripts\Behaviours\SliderVisualizer2DUI.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\VolumeSliderVisualizerUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\SliderVisualizerUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TitleScreenDecorator.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Token.cs" />
@@ -120,6 +122,7 @@
     <Compile Include="Assets\Scripts\Interfaces\IGaugeEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IHudEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IMenuEventTarget.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\IOptionEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ITokenEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ITokenStatusEventTarget.cs" />
     <Compile Include="Assets\Scripts\Structs\Combination.cs" />
