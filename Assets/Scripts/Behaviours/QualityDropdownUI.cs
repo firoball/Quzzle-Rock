@@ -17,7 +17,8 @@ public class QualityDropdownUI : MonoBehaviour, IOptionEventTarget
         m_dropdown.ClearOptions();
 
         string[] names = QualitySettings.names;
-        m_lastQualitylevel = QualitySettings.GetQualityLevel();
+        //m_lastQualitylevel = QualitySettings.GetQualityLevel();
+        Load();
         List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
         for (int i = 0; i < names.Length; i++)
         {
@@ -38,6 +39,7 @@ public class QualityDropdownUI : MonoBehaviour, IOptionEventTarget
     {
         QualitySettings.SetQualityLevel(m_qualityLevel);
         m_lastQualitylevel = m_qualityLevel;
+        Save();
     }
 
     public void OnAbort()
@@ -49,5 +51,15 @@ public class QualityDropdownUI : MonoBehaviour, IOptionEventTarget
     {
         yield return new WaitForSeconds(0.3f);
         m_dropdown.value = m_lastQualitylevel;
+    }
+
+    private void Save()
+    {
+        PlayerPrefs.SetInt("Quality Level", m_lastQualitylevel);
+    }
+
+    private void Load()
+    {
+        m_lastQualitylevel = PlayerPrefs.GetInt("Quality Level", QualitySettings.GetQualityLevel());
     }
 }

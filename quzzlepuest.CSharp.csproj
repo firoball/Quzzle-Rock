@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>Android:13</UnityBuildTarget>
     <UnityVersion>5.5.0f3</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -80,14 +78,15 @@
     <Compile Include="Assets\Scripts\Behaviours\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Behaviours\CustomUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\DefaultUI.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\DelayedAudio.cs" />
     <Compile Include="Assets\Scripts\Behaviours\DummyTokenDropper.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\OptionsUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\EndedUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\EventTest.cs" />
     <Compile Include="Assets\Scripts\Behaviours\FPSDisplay.cs" />
     <Compile Include="Assets\Scripts\Behaviours\GaugeVisualizerUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\IconButton.cs" />
     <Compile Include="Assets\Scripts\Behaviours\LevelHudUI.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\OptionsUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\PlayField.cs" />
     <Compile Include="Assets\Scripts\Behaviours\PlayFieldAlert.cs" />
     <Compile Include="Assets\Scripts\Behaviours\PlayFieldDecorator.cs" />
@@ -102,7 +101,6 @@
     <Compile Include="Assets\Scripts\Behaviours\RuleSet.cs" />
     <Compile Include="Assets\Scripts\Behaviours\RuleSetSmash.cs" />
     <Compile Include="Assets\Scripts\Behaviours\SliderVisualizer2DUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\VolumeSliderVisualizerUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\SliderVisualizerUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TitleScreenDecorator.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Token.cs" />
@@ -111,6 +109,7 @@
     <Compile Include="Assets\Scripts\Behaviours\TokenMorphVisualizer.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenStatusVisualizer.cs" />
     <Compile Include="Assets\Scripts\Behaviours\UIFader.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\VolumeSliderVisualizerUI.cs" />
     <Compile Include="Assets\Scripts\Classes\CombinationFinder.cs" />
     <Compile Include="Assets\Scripts\Classes\DataField.cs" />
     <Compile Include="Assets\Scripts\Classes\PositionStack.cs" />

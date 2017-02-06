@@ -25,6 +25,7 @@ namespace Assets.Scripts.Behaviours
         private const int c_minChainLength = 3;
         private const float c_worldSize = 1.3f;
         private const float c_ClearDelay = 0.07f;
+        private const int c_maxIterations = 100;
 
         #region static functions
 
@@ -202,48 +203,54 @@ namespace Assets.Scripts.Behaviours
 
         private void Populate_internal()
         {
-            //populate
-            DataFieldSize size = m_fieldTokens.Size();
-            for (int column = 0; column < size.Columns; column++)
+            int populations = 0;
+            //repeat until field is not stuck (still allows any valid token swap)
+            do
             {
-                for (int row = 0; row < size.Rows; row++)
+                populations++;
+                //populate
+                DataFieldSize size = m_fieldTokens.Size();
+                for (int column = 0; column < size.Columns; column++)
                 {
-                    int id = m_tokenStack.GetNextTokenId(column);
-                    DataFieldPosition fieldPos = new DataFieldPosition(column, row);
-                    m_fieldTypes.SetAtPosition(fieldPos, id);
-                }
-            }
-
-            //eliminate any generated combinations
-            CombinationFinder cf = new CombinationFinder(m_fieldTypes, m_debug);
-            int iterations = 1;
-
-            //try maximum 100 iterations
-            while (cf.Find(c_minChainLength) && (iterations < 100))
-            {
-                List<Combination> comboList = cf.Combinations;
-                foreach (Combination combination in comboList)
-                {
-                    //only replace id if more than one id is configured (this should always be the case)
-                    if ((combination.Positions.Count > 1) && (Preferences.Current.TokenCount > 1))
+                    for (int row = 0; row < size.Rows; row++)
                     {
-                        int id;
-                        do
-                        {
-                            id = m_tokenStack.GetNextTokenId(combination.Positions[1].Column);
-                        } while (id == combination.Id);
-                        DataFieldPosition fieldPos = combination.Positions[1];
+                        int id = m_tokenStack.GetNextTokenId(column);
+                        DataFieldPosition fieldPos = new DataFieldPosition(column, row);
                         m_fieldTypes.SetAtPosition(fieldPos, id);
                     }
                 }
-                cf.Clear();
-                iterations++;
-            }
 
-            if (m_debug)
-            {
-                Debug.Log("Populate: " + iterations + " iterations performed.");
-            }
+                //eliminate any generated combinations
+                CombinationFinder cf = new CombinationFinder(m_fieldTypes, m_debug);
+                int iterations = 1;
+
+                //try maximum 100 iterations
+                while (cf.Find(c_minChainLength) && (iterations < c_maxIterations))
+                {
+                    List<Combination> comboList = cf.Combinations;
+                    foreach (Combination combination in comboList)
+                    {
+                        //only replace id if more than one id is configured (this should always be the case)
+                        if ((combination.Positions.Count > 1) && (Preferences.Current.TokenCount > 1))
+                        {
+                            int id;
+                            do
+                            {
+                                id = m_tokenStack.GetNextTokenId(combination.Positions[1].Column);
+                            } while (id == combination.Id);
+                            DataFieldPosition fieldPos = combination.Positions[1];
+                            m_fieldTypes.SetAtPosition(fieldPos, id);
+                        }
+                    }
+                    cf.Clear();
+                    iterations++;
+                }
+
+                if (m_debug)
+                {
+                    Debug.Log("Populate: " + populations + "x" + iterations + " iterations performed.");
+                }
+            } while (IsStuck_internal() && (populations < c_maxIterations));
         }
 
         private void SpawnTokens()

@@ -59,8 +59,10 @@ namespace Assets.Scripts.Behaviours
             m_enableSound = false;
             m_valueText = GetComponent<Text>();
             m_slider.onValueChanged.AddListener((x) => OnChange(x));
-            OnChange(m_slider.value);
-            SetValue(AudioListener.volume);
+            //OnChange(m_slider.value);
+            //SetValue(AudioListener.volume);
+            Load();
+            SetValue(m_volume);
             m_lastValue = m_slider.value;
             m_enableSound = true;
         }
@@ -80,6 +82,7 @@ namespace Assets.Scripts.Behaviours
         {
             AudioListener.volume = m_volume;
             m_lastValue = m_slider.value;
+            Save();
         }
 
         public void OnAbort()
@@ -108,6 +111,16 @@ namespace Assets.Scripts.Behaviours
             m_enableSound = false;
             m_slider.value = m_lastValue;
             m_enableSound = true;
+        }
+
+        private void Save()
+        {
+            PlayerPrefs.SetFloat("Audio Volume", m_volume);
+        }
+
+        private void Load()
+        {
+            m_volume = PlayerPrefs.GetFloat("Audio Volume", AudioListener.volume);
         }
     }
 }

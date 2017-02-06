@@ -17,6 +17,8 @@ namespace Assets.Scripts.Behaviours
         [SerializeField]
         private SliderVisualizerUI m_tokenSliderUI;
 
+        private Preferences m_preferences;
+
         void Start()
         {
             if (
@@ -29,21 +31,15 @@ namespace Assets.Scripts.Behaviours
             }
 
             //adjust token slider range to configured token count
-            if (m_tokenSliderUI != null)
-            {
-                Slider tokenSlider = m_tokenSliderUI.Slider;
-                tokenSlider.maxValue = Convert.ToSingle(TokenConfig.StandardToken.Length);
-            }
+            Slider tokenSlider = m_tokenSliderUI.Slider;
+            tokenSlider.maxValue = Convert.ToSingle(TokenConfig.StandardToken.Length);
 
-            if (Preferences.Custom != null)
-            {
-                Preferences preferences = Preferences.Custom;
-                m_fieldSliderUI.SetValueHorInt(preferences.ColumnCount);
-                m_fieldSliderUI.SetValueVertInt(preferences.RowCount);
-                m_turnSliderUI.SetValueInt(preferences.MoveCount);
-                m_scoreSliderUI.SetValueInt(preferences.TargetCount);
-                m_tokenSliderUI.SetValueInt(preferences.TokenCount);
-            }
+            Load();
+            m_fieldSliderUI.SetValueHorInt(m_preferences.ColumnCount);
+            m_fieldSliderUI.SetValueVertInt(m_preferences.RowCount);
+            m_turnSliderUI.SetValueInt(m_preferences.MoveCount);
+            m_scoreSliderUI.SetValueInt(m_preferences.TargetCount);
+            m_tokenSliderUI.SetValueInt(m_preferences.TokenCount);
         }
 
         public void Ok()
@@ -57,17 +53,34 @@ namespace Assets.Scripts.Behaviours
                 return;
             }
 
-            Preferences preferences = new Preferences();
-            preferences.ColumnCount = m_fieldSliderUI.GetValueHorInt();
-            preferences.RowCount = m_fieldSliderUI.GetValueVertInt();
-            preferences.MoveCount = m_turnSliderUI.GetValueInt();
-            preferences.TargetCount = m_scoreSliderUI.GetValueInt();
-            preferences.TokenCount = m_tokenSliderUI.GetValueInt();
+            m_preferences.ColumnCount = m_fieldSliderUI.GetValueHorInt();
+            m_preferences.RowCount = m_fieldSliderUI.GetValueVertInt();
+            m_preferences.MoveCount = m_turnSliderUI.GetValueInt();
+            m_preferences.TargetCount = m_scoreSliderUI.GetValueInt();
+            m_preferences.TokenCount = m_tokenSliderUI.GetValueInt();
 
-            Preferences.Current = preferences;
-            Preferences.Custom = preferences;
+            Preferences.Current = m_preferences;
+            Save();
             LoadLevel(1);
         }
 
+        private void Load()
+        {
+            m_preferences = new Preferences();
+            m_preferences.ColumnCount = PlayerPrefs.GetInt("Custom ColumnCount", m_fieldSliderUI.GetValueHorInt());
+            m_preferences.RowCount = PlayerPrefs.GetInt("Custom RowCount", m_fieldSliderUI.GetValueVertInt());
+            m_preferences.MoveCount = PlayerPrefs.GetInt("Custom MoveCount", m_turnSliderUI.GetValueInt());
+            m_preferences.TargetCount = PlayerPrefs.GetInt("Custom TargetCount", m_scoreSliderUI.GetValueInt());
+            m_preferences.TokenCount = PlayerPrefs.GetInt("Custom TokenCount", m_tokenSliderUI.GetValueInt());
+        }
+
+        private void Save()
+        {
+            PlayerPrefs.SetInt("Custom ColumnCount", m_preferences.ColumnCount);
+            PlayerPrefs.SetInt("Custom RowCount", m_preferences.RowCount);
+            PlayerPrefs.SetInt("Custom MoveCount", m_preferences.MoveCount);
+            PlayerPrefs.SetInt("Custom TargetCount", m_preferences.TargetCount);
+            PlayerPrefs.SetInt("Custom TokenCount", m_preferences.TokenCount);
+        }
     }
 }

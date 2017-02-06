@@ -80,7 +80,7 @@ namespace Assets.Scripts.Behaviours
             UnityEngine.Debug.Log("Application.Quit()");
 
             //Android: Kill me really
-            if (Application.platform == RuntimePlatform.Android)
+            /*if (Application.platform == RuntimePlatform.Android)
             {
                 ProcessThreadCollection pt = Process.GetCurrentProcess().Threads;
                 foreach (ProcessThread p in pt)
@@ -88,7 +88,7 @@ namespace Assets.Scripts.Behaviours
                     p.Dispose();
                 }
                 Process.GetCurrentProcess().Kill();
-            }
+            }*/
         }
 
     }
