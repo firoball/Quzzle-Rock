@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 31202932101f84a41bfb9ddea3a894d6
+timeCreated: 1486637132
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 20
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Passion
+  fontNames:
+  - Passion
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 1
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
