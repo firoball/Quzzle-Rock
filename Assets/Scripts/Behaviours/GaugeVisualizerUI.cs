@@ -47,11 +47,8 @@ namespace Assets.Scripts.Behaviours
                 m_width = 0.0f;
                 m_originalScale = Vector3.one;
             }
-            m_visualize = false;
-            m_timer = 0.0f;
-            m_enabled = false;
 
-            StartCoroutine(StaetupDelay());
+            OnReset();
         }
 
         void Update()
@@ -92,6 +89,15 @@ namespace Assets.Scripts.Behaviours
             m_lastValue = value;
         }
 
+        public void OnReset()
+        {
+            m_visualize = false;
+            m_timer = 0.0f;
+            m_enabled = false;
+
+            StartCoroutine(StartupDelay());
+        }
+
         private void TriggerAnimation()
         {
             if ((m_gauge != null) && (m_gaugeBackground != null) && m_enabled)
@@ -102,7 +108,7 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        private IEnumerator StaetupDelay()
+        private IEnumerator StartupDelay()
         {
             yield return new WaitForSeconds(m_animationInhibition);
             m_enabled = true;

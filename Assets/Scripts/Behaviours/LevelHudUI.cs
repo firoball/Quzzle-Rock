@@ -9,14 +9,6 @@ namespace Assets.Scripts.Behaviours
     public class LevelHudUI : DefaultUI, IHudEventTarget
     {
 
-        /*[SerializeField]
-        private RectTransform m_turnsGauge;
-        [SerializeField]
-        private RectTransform m_scoreGauge;
-        [SerializeField]
-        private Text m_turnsText;
-        [SerializeField]
-        private Text m_scoreText;*/
         [SerializeField]
         private Text m_comboText;
         [SerializeField]
@@ -25,8 +17,6 @@ namespace Assets.Scripts.Behaviours
         private GameObject m_scoreGauge;
 
 
-        //private float m_turnsWidth;
-        //private float m_scoreWidth;
         private float m_comboFadeTimer;
         private Color m_comboOriginalColor;
         private Color m_comboNoAlphaColor;
@@ -43,14 +33,6 @@ namespace Assets.Scripts.Behaviours
         protected override void Awake()
         {
             base.Awake();
-            /*if (m_turnsGauge != null)
-            {
-                m_turnsWidth = m_turnsGauge.sizeDelta.x;
-            }
-            if (m_scoreGauge != null)
-            {
-                m_scoreWidth = m_scoreGauge.sizeDelta.x;
-            }*/
             if (m_comboText != null)
             {
                 m_comboOriginalColor = m_comboText.color;
@@ -67,26 +49,6 @@ namespace Assets.Scripts.Behaviours
                 m_comboText.color = Color.Lerp(m_comboNoAlphaColor, m_comboOriginalColor, m_comboFadeTimer);
             }
         }
-
-        /*private void UpdateTurns()
-        {
-            if ((m_turnsGauge != null) && (m_turnsText != null))
-            {
-                float width = m_turnsWidth * (Convert.ToSingle(m_turns) / Convert.ToSingle(m_turnsMax));
-                m_turnsGauge.sizeDelta = new Vector2(width, m_turnsGauge.sizeDelta.y);
-                m_turnsText.text = m_turns + "/" + m_turnsMax;
-            }
-        }
-
-        private void UpdateScore()
-        {
-            if ((m_scoreGauge != null) && (m_scoreText != null))
-            {
-                float width = m_scoreWidth * (Convert.ToSingle(m_score) / Convert.ToSingle(m_scoreMax));
-                m_scoreGauge.sizeDelta = new Vector2(width, m_scoreGauge.sizeDelta.y);
-                m_scoreText.text = m_score + "/" + m_scoreMax;
-            }
-        }*/
 
         private void UpdateCombos()
         {
@@ -105,28 +67,24 @@ namespace Assets.Scripts.Behaviours
         public void OnUpdateScore(int score)
         {
             m_score = score;
-            //UpdateScore();
             ExecuteEvents.Execute<IGaugeEventTarget>(m_scoreGauge, null, (x, y) => x.OnUpdate(m_score, m_scoreMax));
         }
 
         public void OnUpdateScoreMax(int scoreMax)
         {
             m_scoreMax = scoreMax;
-            //UpdateScore();
             ExecuteEvents.Execute<IGaugeEventTarget>(m_scoreGauge, null, (x, y) => x.OnUpdate(m_score, m_scoreMax));
         }
 
         public void OnUpdateTurns(int turns)
         {
             m_turns = turns;
-            //UpdateTurns();
             ExecuteEvents.Execute<IGaugeEventTarget>(m_turnsGauge, null, (x, y) => x.OnUpdate(m_turns, m_turnsMax));
         }
 
         public void OnUpdateTurnsMax(int turnsMax)
         {
             m_turnsMax = turnsMax;
-            //UpdateTurns();
             ExecuteEvents.Execute<IGaugeEventTarget>(m_turnsGauge, null, (x, y) => x.OnUpdate(m_turns, m_turnsMax));
         }
 
@@ -134,6 +92,12 @@ namespace Assets.Scripts.Behaviours
         {
             m_combos = combos;
             UpdateCombos();
+        }
+
+        public void OnRestart()
+        {
+            ExecuteEvents.Execute<IGaugeEventTarget>(m_scoreGauge, null, (x, y) => x.OnReset());
+            ExecuteEvents.Execute<IGaugeEventTarget>(m_turnsGauge, null, (x, y) => x.OnReset());
         }
 
     }

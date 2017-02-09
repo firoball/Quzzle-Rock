@@ -59,10 +59,9 @@ namespace Assets.Scripts.Behaviours
             m_enableSound = false;
             m_valueText = GetComponent<Text>();
             m_slider.onValueChanged.AddListener((x) => OnChange(x));
-            //OnChange(m_slider.value);
-            //SetValue(AudioListener.volume);
             Load();
             SetValue(m_volume);
+            OnChange(m_slider.value); //text display would not always update without - for whatever reason
             m_lastValue = m_slider.value;
             m_enableSound = true;
         }

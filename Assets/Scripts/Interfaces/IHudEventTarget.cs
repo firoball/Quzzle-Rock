@@ -9,5 +9,6 @@ namespace Assets.Scripts.Interfaces
         void OnUpdateTurns(int turns);
         void OnUpdateTurnsMax(int turnsMax);
         void OnUpdateCombos(int combos);
+        void OnRestart();
     }
 }

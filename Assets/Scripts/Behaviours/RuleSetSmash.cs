@@ -42,6 +42,7 @@ namespace Assets.Scripts.Behaviours
         private const float c_shakeIntensityIncrement = 0.2f;
         private const float c_shakeIntensityMaximum = 1.7f;
         private const int c_alertTurnsLeft = 5;
+        private const int c_modifierBonusAmount = 8;
 
         public int TurnsLeft
         {
@@ -211,6 +212,7 @@ namespace Assets.Scripts.Behaviours
 
         public override void Restart()
         {
+            ExecuteEvents.Execute<IHudEventTarget>(m_levelHudUI, null, (x, y) => x.OnRestart());
             TurnsLeft = TurnsMax;
             Points = 0;
             m_positionStack.Restart();
@@ -241,7 +243,7 @@ namespace Assets.Scripts.Behaviours
             if ((Combos % 4) == 0)
             {
                 Dictionary<DataFieldPosition, int> tokenDict = new Dictionary<DataFieldPosition, int>();
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < c_modifierBonusAmount; i++)
                 {
                     DataFieldPosition pos;
                     //filter doubles

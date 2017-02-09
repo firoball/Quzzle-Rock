@@ -34,8 +34,9 @@ namespace Assets.Scripts.Behaviours
 
         void Start()
         {
-            //ExecuteEvents.Execute<IMenuEventTarget>(gameObject, null, (x, y) => x.OnShow(false));
             OnShow(false);
+            Screen.sleepTimeout = SleepTimeout.SystemSetting;
+
             if (
                 (m_textButtonPrefab != null) && (m_iconButtonPrefab != null)
                 && m_textButtonPrefab.GetComponent<RectTransform>()

@@ -2,7 +2,6 @@
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using System.Diagnostics;
 using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Behaviours
@@ -77,18 +76,7 @@ namespace Assets.Scripts.Behaviours
             OnHide(false);
             yield return new WaitForSeconds(0.2f);
             Application.Quit();
-            UnityEngine.Debug.Log("Application.Quit()");
-
-            //Android: Kill me really
-            /*if (Application.platform == RuntimePlatform.Android)
-            {
-                ProcessThreadCollection pt = Process.GetCurrentProcess().Threads;
-                foreach (ProcessThread p in pt)
-                {
-                    p.Dispose();
-                }
-                Process.GetCurrentProcess().Kill();
-            }*/
+            Debug.Log("Application.Quit()");
         }
 
     }

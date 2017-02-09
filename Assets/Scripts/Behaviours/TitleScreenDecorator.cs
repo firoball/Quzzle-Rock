@@ -39,7 +39,6 @@ namespace Assets.Scripts.Behaviours
         {
             if ((m_camera.pixelWidth != m_width) || (m_camera.pixelHeight != m_height) || (m_camera.aspect != m_aspect))
             {
-                Debug.Log("Update! " + Time.time);
                 m_width = m_camera.pixelWidth;
                 m_height = m_camera.pixelHeight;
                 m_aspect = m_camera.aspect;
