@@ -19,6 +19,8 @@ namespace Assets.Scripts.Behaviours
         [SerializeField]
         private GameObject m_levelHudUI = null;
         [SerializeField]
+        private GameObject m_resultUI = null;
+        [SerializeField]
         private GameObject m_combo4ToolTip = null;
         [SerializeField]
         private GameObject m_combo5ToolTip = null;
@@ -26,7 +28,6 @@ namespace Assets.Scripts.Behaviours
         private int m_turnsLeft;
         private int m_combos;
         private int m_points;
-        //private int m_extraTurns;
         private int m_turnsMax;
         private int m_pointsMax;
         private PositionStack m_positionStack;
@@ -34,6 +35,7 @@ namespace Assets.Scripts.Behaviours
         private float m_audioPitch;
         private float m_shakeIntensity;
         private GameObject m_cameraObj;
+        private StatisticsManager m_statistics;
 
         private const int c_specialTokenId = 100;
         private const float c_pitchIncrement = /*0.07f;*/0.1f;
@@ -44,7 +46,7 @@ namespace Assets.Scripts.Behaviours
         private const int c_alertTurnsLeft = 5;
         private const int c_modifierBonusAmount = 8;
 
-        public int TurnsLeft
+        private int TurnsLeft
         {
             get
             {
@@ -58,7 +60,7 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        public int Combos
+        private int Combos
         {
             get
             {
@@ -72,7 +74,7 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        public int Points
+        private int Points
         {
             get
             {
@@ -86,7 +88,7 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        public int TurnsMax
+        private int TurnsMax
         {
             get
             {
@@ -100,7 +102,7 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        public int PointsMax
+        private int PointsMax
         {
             get
             {
@@ -117,6 +119,7 @@ namespace Assets.Scripts.Behaviours
         void Awake()
         {
             m_audio = GetComponent<AudioSource>();
+            m_statistics = new StatisticsManager(m_resultUI);
         }
 
         void Start()
@@ -151,19 +154,20 @@ namespace Assets.Scripts.Behaviours
                 if (combination.Positions.Count == 4)
                 {
                     SpawnLabelForCombination(m_combo4ToolTip, combination);
-                    //m_extraTurns++;
+                    m_statistics.game.ExtraTurns++;
                     TurnsLeft = Math.Min(TurnsLeft + 1, TurnsMax);
                     extraTurn = true;
                 }
                 else if (combination.Positions.Count > 4)
                 {
                     SpawnLabelForCombination(m_combo5ToolTip, combination);
-                    //m_extraTurns += 2;
+                    m_statistics.game.ExtraTurns += 2;
                     TurnsLeft = Math.Min(TurnsLeft + 2, TurnsMax);
                     extraTurn = true;
                 }
             }
             Combos++;
+
             //play sound
             if (combinationList.Count > 0)
             {
@@ -171,12 +175,12 @@ namespace Assets.Scripts.Behaviours
                 m_audio.Play();
                 m_audioPitch = Mathf.Min(m_audioPitch + c_pitchIncrement, c_pitchMax);
             }
+
             if (scored)
             {
                 AudioManager.Play("score");
                 ExecuteEvents.Execute<ICameraShakeTarget>(m_cameraObj, null, (x, y) => x.OnShake(m_shakeIntensity));
                 m_shakeIntensity = Math.Min(m_shakeIntensity + c_shakeIntensityIncrement, c_shakeIntensityMaximum);
-
             }
             else
             {
@@ -198,15 +202,15 @@ namespace Assets.Scripts.Behaviours
         public override void TurnStart()
         {
             Combos = 0;
-            //m_extraTurns = 0;
             m_audioPitch = 1.0f;
             m_shakeIntensity = c_defaultShakeIntensity;
         }
 
         public override void TurnEnd()
         {
-            //TurnsLeft = Math.Min(TurnsLeft + m_extraTurns -1, TurnsMax);
+            m_statistics.game.Turns++;
             TriggerAlert();
+            TriggerResults();
             Combos = 0;
         }
 
@@ -217,6 +221,8 @@ namespace Assets.Scripts.Behaviours
             Points = 0;
             m_positionStack.Restart();
             TriggerAlert();
+            m_statistics.Init();
+            m_statistics.global.GamesPlayed++;
         }
 
         public override bool GameLost()
@@ -235,6 +241,23 @@ namespace Assets.Scripts.Behaviours
                 return true;
             }
             return false;
+        }
+
+        public override void GameEnd()
+        {
+            if (GameWon())
+            {
+                //TODO: evaluate wins and fails for specific preferences
+            }
+            else if (GameLost())
+            {
+                //TODO: evaluate wins and fails for specific preferences
+            }
+            else
+            {
+                m_statistics.global.GamesAborted++;
+            }
+            m_statistics.Store();
         }
 
         public override void PlayFieldModifier()
@@ -283,6 +306,20 @@ namespace Assets.Scripts.Behaviours
                 intensity = 0.0f; //stop alert
             }
             ExecuteEvents.Execute<ICameraAlertTarget>(m_cameraObj, null, (x, y) => x.OnAlert(intensity));
+        }
+
+        private void TriggerResults()
+        {
+            if (Combos > 1)
+            {
+                m_statistics.game.Combos++;
+            }
+            m_statistics.game.BiggestCombo = Math.Max(m_statistics.game.BiggestCombo, Combos);
+
+            if (GameWon() || GameLost())
+            {
+                m_statistics.Report();
+            }
         }
     }
 }

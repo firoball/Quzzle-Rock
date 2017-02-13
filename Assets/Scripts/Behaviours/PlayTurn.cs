@@ -10,7 +10,6 @@ namespace Assets.Scripts.Behaviours
     public class PlayTurn : MonoBehaviour
     {
         private static PlayTurn s_singleton;
-        private bool m_gameHasEnded = false;
 
         [SerializeField]
         private GameObject m_endedMenu;
@@ -25,21 +24,6 @@ namespace Assets.Scripts.Behaviours
 
         private RuleSet m_ruleSet;
 
-        public static bool GameHasEnded
-        {
-            get
-            {
-                if (s_singleton != null)
-                {
-                    return s_singleton.m_gameHasEnded;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
         public static void PlayerDone()
         {
             if (s_singleton != null)
@@ -50,6 +34,27 @@ namespace Assets.Scripts.Behaviours
             {
                 Debug.Log("PlayTurn not assigned to any GameObject");
             }
+        }
+
+        public static void New()
+        {
+            s_singleton.m_ruleSet.Restart();
+            s_singleton.m_ruleSet.TurnStart();
+            PlayField.Restart(true);
+            PlayField.Unlock();
+        }
+
+        public static void Retry()
+        {
+            s_singleton.m_ruleSet.Restart();
+            s_singleton.m_ruleSet.TurnStart();
+            PlayField.Restart(false);
+            PlayField.Unlock();
+        }
+
+        public static void End()
+        {
+            s_singleton.m_ruleSet.GameEnd();
         }
 
         void Awake()
@@ -76,11 +81,10 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        private void End(bool won)
+        private void Finished(bool won)
         {
-            m_gameHasEnded = true;
             PlayField.Lock();
-            StartCoroutine(EndDelay(won));
+            StartCoroutine(FinishedDelay(won));
         }
 
         private void SpawnLabelforEnd(GameObject obj)
@@ -91,25 +95,7 @@ namespace Assets.Scripts.Behaviours
             }
         }
 
-        public static void New()
-        {
-            s_singleton.m_ruleSet.Restart();
-            s_singleton.m_ruleSet.TurnStart();
-            s_singleton.m_gameHasEnded = false;
-            PlayField.Restart(true);
-            PlayField.Unlock();
-        }
-
-        public static void Retry()
-        {
-            s_singleton.m_ruleSet.Restart();
-            s_singleton.m_ruleSet.TurnStart();
-            s_singleton.m_gameHasEnded = false;
-            PlayField.Restart(false);
-            PlayField.Unlock();
-        }
-
-        private IEnumerator EndDelay(bool won)
+        private IEnumerator FinishedDelay(bool won)
         {
             GameObject menu;
             if (won)
@@ -173,11 +159,13 @@ namespace Assets.Scripts.Behaviours
             //check if game is over
             if (m_ruleSet.GameWon())
             {
-                End(true);
+                Finished(true);
+                AudioManager.Play("won");
             }
             else if (m_ruleSet.GameLost())
             {
-                End(false);
+                Finished(false);
+                AudioManager.Play("lost");
             }
             else
             {

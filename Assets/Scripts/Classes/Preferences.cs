@@ -16,7 +16,7 @@ namespace Assets.Scripts.Classes
         [SerializeField]
         private int m_moveCount = 7;//20;
         [SerializeField]
-        private int m_targetCount = 60;
+        private int m_targetCount = 3;//60;
 
         public int ColumnCount
         {

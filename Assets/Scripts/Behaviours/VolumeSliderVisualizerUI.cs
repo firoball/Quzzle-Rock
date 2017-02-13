@@ -114,12 +114,12 @@ namespace Assets.Scripts.Behaviours
 
         private void Save()
         {
-            PlayerPrefs.SetFloat("Audio Volume", m_volume);
+            PlayerPrefs.SetFloat("options.audioVolume", m_volume);
         }
 
         private void Load()
         {
-            m_volume = PlayerPrefs.GetFloat("Audio Volume", AudioListener.volume);
+            m_volume = PlayerPrefs.GetFloat("options.audioVolume", AudioListener.volume);
         }
     }
 }

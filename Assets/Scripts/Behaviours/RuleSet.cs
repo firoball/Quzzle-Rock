@@ -43,6 +43,11 @@ namespace Assets.Scripts.Behaviours
             return true;
         }
 
+        public virtual void GameEnd()
+        {
+            Debug.LogWarning("RuleSet: GameEnd not implemented.");
+        }
+
         public virtual void PlayFieldModifier()
         {
             Debug.LogWarning("RuleSet: PlayFieldModifier not implemented.");

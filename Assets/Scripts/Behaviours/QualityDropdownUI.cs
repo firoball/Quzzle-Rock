@@ -55,11 +55,11 @@ public class QualityDropdownUI : MonoBehaviour, IOptionEventTarget
 
     private void Save()
     {
-        PlayerPrefs.SetInt("Quality Level", m_lastQualitylevel);
+        PlayerPrefs.SetInt("options.qualityLevel", m_lastQualitylevel);
     }
 
     private void Load()
     {
-        m_lastQualitylevel = PlayerPrefs.GetInt("Quality Level", QualitySettings.GetQualityLevel());
+        m_lastQualitylevel = PlayerPrefs.GetInt("options.qualityLevel", QualitySettings.GetQualityLevel());
     }
 }

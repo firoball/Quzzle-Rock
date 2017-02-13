@@ -65,7 +65,7 @@ namespace Assets.Scripts.Behaviours
                 m_gaugeBackground.localScale = m_gauge.localScale;
 
                 m_increment = Mathf.Max(m_increment - (Time.deltaTime * c_scaleSpeedReduction), 0.0f);
-                m_timer += m_increment;
+                m_timer += m_increment;// * Time.deltaTime;
             }
         }
 

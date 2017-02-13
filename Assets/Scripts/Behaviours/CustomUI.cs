@@ -61,26 +61,27 @@ namespace Assets.Scripts.Behaviours
 
             Preferences.Current = m_preferences;
             Save();
+            PlayerPrefs.Save();
             LoadLevel(1);
         }
 
         private void Load()
         {
             m_preferences = new Preferences();
-            m_preferences.ColumnCount = PlayerPrefs.GetInt("Custom ColumnCount", m_fieldSliderUI.GetValueHorInt());
-            m_preferences.RowCount = PlayerPrefs.GetInt("Custom RowCount", m_fieldSliderUI.GetValueVertInt());
-            m_preferences.MoveCount = PlayerPrefs.GetInt("Custom MoveCount", m_turnSliderUI.GetValueInt());
-            m_preferences.TargetCount = PlayerPrefs.GetInt("Custom TargetCount", m_scoreSliderUI.GetValueInt());
-            m_preferences.TokenCount = PlayerPrefs.GetInt("Custom TokenCount", m_tokenSliderUI.GetValueInt());
+            m_preferences.ColumnCount = PlayerPrefs.GetInt("custom.columnCount", m_fieldSliderUI.GetValueHorInt());
+            m_preferences.RowCount = PlayerPrefs.GetInt("custom.rowCount", m_fieldSliderUI.GetValueVertInt());
+            m_preferences.MoveCount = PlayerPrefs.GetInt("custom.moveCount", m_turnSliderUI.GetValueInt());
+            m_preferences.TargetCount = PlayerPrefs.GetInt("custom.targetCount", m_scoreSliderUI.GetValueInt());
+            m_preferences.TokenCount = PlayerPrefs.GetInt("custom.tokenCount", m_tokenSliderUI.GetValueInt());
         }
 
         private void Save()
         {
-            PlayerPrefs.SetInt("Custom ColumnCount", m_preferences.ColumnCount);
-            PlayerPrefs.SetInt("Custom RowCount", m_preferences.RowCount);
-            PlayerPrefs.SetInt("Custom MoveCount", m_preferences.MoveCount);
-            PlayerPrefs.SetInt("Custom TargetCount", m_preferences.TargetCount);
-            PlayerPrefs.SetInt("Custom TokenCount", m_preferences.TokenCount);
+            PlayerPrefs.SetInt("custom.columnCount", m_preferences.ColumnCount);
+            PlayerPrefs.SetInt("custom.rowCount", m_preferences.RowCount);
+            PlayerPrefs.SetInt("custom.moveCount", m_preferences.MoveCount);
+            PlayerPrefs.SetInt("custom.targetCount", m_preferences.TargetCount);
+            PlayerPrefs.SetInt("custom.tokenCount", m_preferences.TokenCount);
         }
     }
 }

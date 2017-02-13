@@ -17,6 +17,7 @@ namespace Assets.Scripts.Behaviours
                 ExecuteEvents.Execute<IOptionEventTarget>(target, null, (x, y) => x.OnConfirm());
             }
             OpenMenu(newMenu);
+            PlayerPrefs.Save();
         }
 
         public void Abort(GameObject newMenu)
