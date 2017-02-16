@@ -8,7 +8,7 @@ namespace Assets.Scripts.Behaviours
         private ParticleSystem m_particles;
         private Bounds m_bounds;
 
-        private const float c_density = 0.03f;//0.15f;
+        private const float c_density = 0.025f;//0.15f;
         private const float c_shapeScale = 2.0f;
 
         void Awake()

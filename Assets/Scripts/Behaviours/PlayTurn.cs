@@ -52,12 +52,12 @@ namespace Assets.Scripts.Behaviours
             PlayField.Unlock();
         }
 
-        public static void End()
+        public static void Abort()
         {
-            s_singleton.m_ruleSet.GameEnd();
+            s_singleton.m_ruleSet.Abort();
         }
 
-        void Awake()
+        void Start()
         {
             if (s_singleton == null)
             {
@@ -65,7 +65,8 @@ namespace Assets.Scripts.Behaviours
                 m_ruleSet = GetComponent<RuleSet>();
                 if (m_ruleSet != null)
                 {
-                    PlayField.Unlock();
+                    //PlayField.Unlock();
+                    New();
                 }
                 else
                 {
@@ -109,6 +110,10 @@ namespace Assets.Scripts.Behaviours
                 menu = m_endedMenu;
             }
             yield return new WaitForSeconds(3.0f);
+            /* screen dimming was reset on intention in ProcessPlayField()
+             * make sure this is undone when game was finished
+             */
+            ExecuteEvents.Execute<IDimmerEventTarget>(m_levelMenu, null, (x, y) => x.OnDimmer(true));
             ExecuteEvents.Execute<IMenuEventTarget>(menu, null, (x, y) => x.OnShow(false));
         }
 
@@ -120,7 +125,7 @@ namespace Assets.Scripts.Behaviours
             /* screen dimming is controlled by level menu. When menu is hidden, dimming will be
              * active. This is not wanted during combo and refill phase, so override setting here
              */
-            Screen.sleepTimeout = SleepTimeout.NeverSleep;
+            ExecuteEvents.Execute<IDimmerEventTarget>(m_levelMenu, null, (x, y) => x.OnDimmer(false));
             yield return new WaitForSeconds(0.2f);
             m_ruleSet.PlayerDone();
 
@@ -157,12 +162,12 @@ namespace Assets.Scripts.Behaviours
             m_ruleSet.TurnEnd();
 
             //check if game is over
-            if (m_ruleSet.GameWon())
+            if (m_ruleSet.IsGameWon())
             {
                 Finished(true);
                 AudioManager.Play("won");
             }
-            else if (m_ruleSet.GameLost())
+            else if (m_ruleSet.IsGameLost())
             {
                 Finished(false);
                 AudioManager.Play("lost");

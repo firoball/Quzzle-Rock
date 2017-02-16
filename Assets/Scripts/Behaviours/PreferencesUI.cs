@@ -30,7 +30,7 @@ namespace Assets.Scripts.Behaviours
         [SerializeField]
         private GameObject m_customMenu;
 
-        private PreferencesSet[] m_preferencesSets;
+        private Preferences[] m_preferences;
 
         void Start()
         {
@@ -48,12 +48,12 @@ namespace Assets.Scripts.Behaviours
                 float xOffset = (rectTransformText.rect.width * 0.5f) + (rectTransformIcon.rect.width * 0.5f) + m_buttonSpacing;
                 float yOffset = rectTransformText.rect.height + m_buttonSpacing;
 
-                m_preferencesSets = PreferencesConfig.PreferencesSets;
+                m_preferences = PreferencesConfig.Preferences;
                 Vector3 pos = new Vector3(0.0f, m_buttonTop, 0.0f);
                 Button button;
-                foreach (PreferencesSet preferenceSet in m_preferencesSets)
+                foreach (Preferences preferences in m_preferences)
                 {
-                    button = CreateTextButton(pos, preferenceSet.Name);
+                    button = CreateTextButton(pos, preferences.Name);
                     button.onClick.AddListener(() => SetPreferencesAndStart());
                     pos.y -= yOffset;
                 }
@@ -128,10 +128,10 @@ namespace Assets.Scripts.Behaviours
                 if (button != null)
                 {
                     Text text = button.GetComponentInChildren<Text>();
-                    PreferencesSet set;
-                    if (PreferencesConfig.Find(text.text, out set))
+                    Preferences preferences;
+                    if (PreferencesConfig.Find(text.text, out preferences))
                     {
-                        Preferences.Current = set.Preferences;
+                        Preferences.Current = preferences;
                     }
                     LoadLevel(1);
                 }

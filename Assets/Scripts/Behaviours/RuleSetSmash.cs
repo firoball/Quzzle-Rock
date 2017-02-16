@@ -119,7 +119,10 @@ namespace Assets.Scripts.Behaviours
         void Awake()
         {
             m_audio = GetComponent<AudioSource>();
-            m_statistics = new StatisticsManager(m_resultUI);
+            m_statistics = new StatisticsManager(m_resultUI, Preferences.Current.Name);
+            m_positionStack = new PositionStack(m_stackSize, m_debug);
+            m_audioPitch = 1.0f;
+            m_shakeIntensity = c_defaultShakeIntensity;
         }
 
         void Start()
@@ -132,12 +135,9 @@ namespace Assets.Scripts.Behaviours
             {
                 m_cameraObj = null;
             }
-            m_positionStack = new PositionStack(m_stackSize, m_debug);
+            //Events are not available yet during Awake()...
             TurnsMax = Preferences.Current.MoveCount;
             PointsMax = Preferences.Current.TargetCount;
-            m_audioPitch = 1.0f;
-            m_shakeIntensity = c_defaultShakeIntensity;
-            Restart();
         }
 
         public override void ProcessCombo(List<Combination> combinationList)
@@ -154,14 +154,14 @@ namespace Assets.Scripts.Behaviours
                 if (combination.Positions.Count == 4)
                 {
                     SpawnLabelForCombination(m_combo4ToolTip, combination);
-                    m_statistics.game.ExtraTurns++;
+                    m_statistics.ExtraTurns++;
                     TurnsLeft = Math.Min(TurnsLeft + 1, TurnsMax);
                     extraTurn = true;
                 }
                 else if (combination.Positions.Count > 4)
                 {
                     SpawnLabelForCombination(m_combo5ToolTip, combination);
-                    m_statistics.game.ExtraTurns += 2;
+                    m_statistics.ExtraTurns += 2;
                     TurnsLeft = Math.Min(TurnsLeft + 2, TurnsMax);
                     extraTurn = true;
                 }
@@ -208,7 +208,7 @@ namespace Assets.Scripts.Behaviours
 
         public override void TurnEnd()
         {
-            m_statistics.game.Turns++;
+            m_statistics.Turns++;
             TriggerAlert();
             TriggerResults();
             Combos = 0;
@@ -221,11 +221,10 @@ namespace Assets.Scripts.Behaviours
             Points = 0;
             m_positionStack.Restart();
             TriggerAlert();
-            m_statistics.Init();
-            m_statistics.global.GamesPlayed++;
+            m_statistics.Begin();
         }
 
-        public override bool GameLost()
+        public override bool IsGameLost()
         {
             if (TurnsLeft == 0)
             {
@@ -234,7 +233,7 @@ namespace Assets.Scripts.Behaviours
             return false;
         }
 
-        public override bool GameWon()
+        public override bool IsGameWon()
         {
             if (Points >= PointsMax)
             {
@@ -243,21 +242,9 @@ namespace Assets.Scripts.Behaviours
             return false;
         }
 
-        public override void GameEnd()
+        public override void Abort()
         {
-            if (GameWon())
-            {
-                //TODO: evaluate wins and fails for specific preferences
-            }
-            else if (GameLost())
-            {
-                //TODO: evaluate wins and fails for specific preferences
-            }
-            else
-            {
-                m_statistics.global.GamesAborted++;
-            }
-            m_statistics.Store();
+            m_statistics.End(StatisticsManager.Finish.ABORTED, Points);
         }
 
         public override void PlayFieldModifier()
@@ -296,7 +283,7 @@ namespace Assets.Scripts.Behaviours
         private void TriggerAlert()
         {
             float intensity;
-            if (!GameLost() && !GameWon())
+            if (!IsGameLost() && !IsGameWon())
             {
                 intensity = Convert.ToSingle(1 + c_alertTurnsLeft - TurnsLeft) / Convert.ToSingle(c_alertTurnsLeft);
                 intensity = Mathf.Clamp01(intensity);
@@ -312,13 +299,19 @@ namespace Assets.Scripts.Behaviours
         {
             if (Combos > 1)
             {
-                m_statistics.game.Combos++;
+                m_statistics.Combos++;
             }
-            m_statistics.game.BiggestCombo = Math.Max(m_statistics.game.BiggestCombo, Combos);
+            m_statistics.BiggestCombo = Math.Max(m_statistics.BiggestCombo, Combos);
 
-            if (GameWon() || GameLost())
+            //meh - need own won/lost hooks
+            if (IsGameWon())
             {
+                m_statistics.End(StatisticsManager.Finish.WON, Points);
                 m_statistics.Report();
+            }
+            if (IsGameLost())
+            {
+                m_statistics.End(StatisticsManager.Finish.LOST, Points);
             }
         }
     }

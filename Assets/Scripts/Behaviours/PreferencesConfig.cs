@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Structs;
+using Assets.Scripts.Classes;
 
 namespace Assets.Scripts.Behaviours
 {
@@ -10,24 +11,24 @@ namespace Assets.Scripts.Behaviours
         private static PreferencesConfig s_singleton;
 
         [SerializeField]
-        private PreferencesSet[] m_preferencesSets;
+        private Preferences[] m_preferences;
 
-        public static PreferencesSet[] PreferencesSets
+        public static Preferences[] Preferences
         {
             get
             {
-                return s_singleton.m_preferencesSets;
+                return s_singleton.m_preferences;
             }
         }
 
-        public static bool Find(string name, out PreferencesSet preferencesSet)
+        public static bool Find(string name, out Preferences preferences)
         {
-            preferencesSet = new PreferencesSet();
-            foreach (PreferencesSet set in s_singleton.m_preferencesSets)
+            preferences = new Preferences();
+            foreach (Preferences pref in s_singleton.m_preferences)
             {
-                if (set.Name == name)
+                if (pref.Name == name)
                 {
-                    preferencesSet = set;
+                    preferences = pref;
                     return true;
                 }
             }

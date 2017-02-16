@@ -31,19 +31,19 @@ namespace Assets.Scripts.Behaviours
             Debug.LogWarning("RuleSet: TurnEnd not implemented.");
         }
 
-        public virtual bool GameWon()
+        public virtual bool IsGameWon()
         {
-            Debug.LogWarning("RuleSet: GameWon not implemented.");
+            Debug.LogWarning("RuleSet: IsGameWon not implemented.");
             return false;
         }
 
-        public virtual bool GameLost()
+        public virtual bool IsGameLost()
         {
-            Debug.LogWarning("RuleSet: GameLost not implemented.");
+            Debug.LogWarning("RuleSet: IsGameLost not implemented.");
             return true;
         }
 
-        public virtual void GameEnd()
+        public virtual void Abort()
         {
             Debug.LogWarning("RuleSet: GameEnd not implemented.");
         }

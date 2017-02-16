@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using System;
+using System.Collections.Generic;
 
-namespace Assets.Scripts.Structs
+namespace Assets.Scripts.Classes
 {
 
-    public struct GlobalStatistics
+    public class GlobalStatistics
     {
         private int m_gamesPlayed;
         private int m_gamesWon;
@@ -98,6 +100,30 @@ namespace Assets.Scripts.Structs
             m_gamesLost = PlayerPrefs.GetInt("global.gamesLost", 0);
             m_gamesAborted = PlayerPrefs.GetInt("global.gamesAborted", 0);
             m_playTime = PlayerPrefs.GetFloat("global.playTime", 0.0f);
+        }
+
+        public Dictionary<string, string> Report()
+        {
+            //these strings should not be hardcoded, but let's get this done
+            Dictionary<string, string> results = new Dictionary<string, string>();
+            string key;
+            string value;
+
+            key = "Total Time";
+            TimeSpan time = TimeSpan.FromSeconds(Convert.ToDouble(m_playTime));
+            value = string.Format("{0}d {1}:{2:D2}", time.Days, time.Hours, time.Minutes);
+            results.Add(key, value);
+
+            key = "Games Played";
+            value = m_gamesPlayed.ToString();
+            results.Add(key, value);
+
+            key = "Abort Ratio";
+            float percent = 100.0f * (Convert.ToSingle(m_gamesAborted) / Convert.ToSingle(m_gamesPlayed));
+            value = percent.ToString("F1") + "%";
+            results.Add(key, value);
+
+            return results;
         }
 
         #endregion

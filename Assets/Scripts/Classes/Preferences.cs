@@ -7,6 +7,8 @@ namespace Assets.Scripts.Classes
     {
         private static Preferences s_current = new Preferences();
 
+        [SerializeField]
+        private string m_name;
         [SerializeField][Range(1, 20)]
         private int m_columnCount = 8;
         [SerializeField][Range(1, 20)]
@@ -17,6 +19,19 @@ namespace Assets.Scripts.Classes
         private int m_moveCount = 7;//20;
         [SerializeField]
         private int m_targetCount = 3;//60;
+
+        public string Name
+        {
+            get
+            {
+                return m_name;
+            }
+
+            set
+            {
+                m_name = value;
+            }
+        }
 
         public int ColumnCount
         {
@@ -94,6 +109,19 @@ namespace Assets.Scripts.Classes
             {
                 s_current = value;
             }
+        }
+
+        public Preferences()
+        {
+            m_name = ToString();
+        }
+
+        public override string ToString()
+        {
+            string str = "";
+            str += "f" + m_columnCount + "x" + m_rowCount + "x" + m_tokenCount;
+            str += "m" + m_moveCount + "t" + m_targetCount;
+            return str;
         }
     }
 }

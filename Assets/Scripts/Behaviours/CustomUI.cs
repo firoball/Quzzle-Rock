@@ -58,6 +58,7 @@ namespace Assets.Scripts.Behaviours
             m_preferences.MoveCount = m_turnSliderUI.GetValueInt();
             m_preferences.TargetCount = m_scoreSliderUI.GetValueInt();
             m_preferences.TokenCount = m_tokenSliderUI.GetValueInt();
+            m_preferences.Name = m_preferences.ToString();
 
             Preferences.Current = m_preferences;
             Save();

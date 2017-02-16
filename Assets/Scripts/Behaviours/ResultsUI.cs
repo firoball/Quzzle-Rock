@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System.Collections;
@@ -11,6 +12,8 @@ namespace Assets.Scripts.Behaviours
     {
         [SerializeField]
         private GameObject m_viewportContent;
+        [SerializeField]
+        private Scrollbar m_viewportScrollbar;
         [SerializeField]
         private GameObject m_endedUI;
         [SerializeField]
@@ -95,9 +98,16 @@ namespace Assets.Scripts.Behaviours
 
         public void OnReset()
         {
+            //scroll back to top
+            if (m_viewportScrollbar != null)
+            {
+                m_viewportScrollbar.value = 1.0f;
+            }
+
+            //remove all viewport content
             if (m_viewportContent != null)
             {
-                for(int i = m_viewportContent.transform.childCount - 1; i >= 0; i--)
+                for (int i = m_viewportContent.transform.childCount - 1; i >= 0; i--)
                 {
                     Transform child = m_viewportContent.transform.GetChild(i);
                     Destroy(child.gameObject);
