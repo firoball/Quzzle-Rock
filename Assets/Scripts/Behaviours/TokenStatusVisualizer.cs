@@ -9,6 +9,7 @@ namespace Assets.Scripts.Behaviours
         private static ParticleSystem.Particle[] s_particles;
 
         private ParticleSystem[] m_particleSystems;
+        private Transform m_transform;
         private bool m_enabled;
         private Vector3 m_parentPosition;
 
@@ -17,12 +18,13 @@ namespace Assets.Scripts.Behaviours
         void Awake()
         {
             m_particleSystems = GetComponentsInChildren<ParticleSystem>();
+            m_transform = transform;
             //use single buffer for all token visualizer particle systems (memory reduction)
             if ((s_particles == null) && (m_particleSystems.Length > 0))
             {
                 s_particles = new ParticleSystem.Particle[m_particleSystems[0].main.maxParticles];
             }
-            m_parentPosition = transform.parent.position;
+            m_parentPosition = m_transform.parent.position;
             Disable();
         }
 
@@ -33,12 +35,12 @@ namespace Assets.Scripts.Behaviours
                 Rotate();
 
                 //if parent is moving, move all particles with it (for token swap)
-                if (transform.parent.position != m_parentPosition)
+                if (m_transform.parent.position != m_parentPosition)
                 {
                     MoveWithParent();
                 }
             }
-            m_parentPosition = transform.parent.position;
+            m_parentPosition = m_transform.parent.position;
         }
 
         public void OnSelect()
@@ -91,7 +93,7 @@ namespace Assets.Scripts.Behaviours
 
         private void MoveWithParent()
         {
-            Vector3 diffPos = transform.parent.position - m_parentPosition;
+            Vector3 diffPos = m_transform.parent.position - m_parentPosition;
             foreach (ParticleSystem particleSystem in m_particleSystems)
             {
                 int particleCount = particleSystem.GetParticles(s_particles);
@@ -105,13 +107,13 @@ namespace Assets.Scripts.Behaviours
 
         private void Rotate()
         {
-            Vector3 angle = transform.localRotation.eulerAngles;
+            Vector3 angle = m_transform.localRotation.eulerAngles;
             //undo parent rotation
-            angle.y = -transform.parent.localRotation.eulerAngles.y;
+            angle.y = -m_transform.parent.localRotation.eulerAngles.y;
             angle.z = ((Time.time * c_animationSpeed) % 360);
-            Quaternion rot = transform.localRotation;
+            Quaternion rot = m_transform.localRotation;
             rot.eulerAngles = angle;
-            transform.localRotation = rot;
+            m_transform.localRotation = rot;
         }
     }
 }

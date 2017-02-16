@@ -26,14 +26,14 @@ namespace Assets.Scripts.Behaviours
 
         private float m_width;
         private float m_timer;
-        private float m_increment;
         private int m_lastValue;
         private Vector3 m_originalScale;
         private bool m_visualize;
         private bool m_enabled;
 
-        private const float c_scaleSpeed = 0.2f;
+        private const float c_scaleSpeed = 7.0f;
         private const float c_scaleSpeedReduction = 0.12f;
+        private const float c_timerStartOffset = Mathf.PI * 0.25f;
 
         void Awake()
         {
@@ -64,8 +64,7 @@ namespace Assets.Scripts.Behaviours
                 m_gauge.localScale = Vector3.Lerp(m_originalScale, m_visualizationScale, factor);
                 m_gaugeBackground.localScale = m_gauge.localScale;
 
-                m_increment = Mathf.Max(m_increment - (Time.deltaTime * c_scaleSpeedReduction), 0.0f);
-                m_timer += m_increment;// * Time.deltaTime;
+                m_timer += Time.deltaTime * c_scaleSpeed;
             }
         }
 
@@ -92,7 +91,7 @@ namespace Assets.Scripts.Behaviours
         public void OnReset()
         {
             m_visualize = false;
-            m_timer = 0.0f;
+            m_timer = c_timerStartOffset;
             m_enabled = false;
 
             StartCoroutine(StartupDelay());
@@ -103,8 +102,7 @@ namespace Assets.Scripts.Behaviours
             if ((m_gauge != null) && (m_gaugeBackground != null) && m_enabled)
             {
                 m_visualize = true;
-                m_timer = 0.0f;
-                m_increment = c_scaleSpeed;
+                m_timer = c_timerStartOffset;
             }
         }
 

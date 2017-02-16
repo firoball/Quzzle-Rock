@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Assets.Scripts.Interfaces;
+using System.Collections;
 
 namespace Assets.Scripts.Behaviours
 {
@@ -57,21 +57,22 @@ namespace Assets.Scripts.Behaviours
         private void Enable()
         {
             m_canvasGroup.alpha = 1.0f;
-            m_canvasGroup.blocksRaycasts = true;
             m_canvasGroup.interactable = true;
+            m_canvasGroup.blocksRaycasts = true;
         }
 
         private void Disable()
         {
             m_canvasGroup.alpha = 0.0f;
-            m_canvasGroup.blocksRaycasts = false;
-            m_canvasGroup.interactable = false;
+            //m_canvasGroup.blocksRaycasts = false;
+            //m_canvasGroup.interactable = false;
+            StartCoroutine(DelayedDisable());
         }
 
         public void Show(bool immediately)
         {
-            m_canvasGroup.blocksRaycasts = false;
-            m_canvasGroup.interactable = false;
+            //m_canvasGroup.blocksRaycasts = false;
+            //m_canvasGroup.interactable = false;
             m_fadeOut = false;
             if (immediately)
             {
@@ -80,14 +81,15 @@ namespace Assets.Scripts.Behaviours
             else
             {
                 m_fadeIn = true;
+                StartCoroutine(DelayedDisable());
             }
 
         }
 
         public void Hide(bool immediately)
         {
-            m_canvasGroup.blocksRaycasts = false;
-            m_canvasGroup.interactable = false;
+            //m_canvasGroup.blocksRaycasts = false;
+            //m_canvasGroup.interactable = false;
             m_fadeIn = false;
             if (immediately)
             {
@@ -96,8 +98,16 @@ namespace Assets.Scripts.Behaviours
             else
             {
                 m_fadeOut = true;
+                StartCoroutine(DelayedDisable());
             }
         }
 
+        //Work around button highlighting bug
+        private IEnumerator DelayedDisable()
+        {
+            m_canvasGroup.blocksRaycasts = false;
+            yield return new WaitForSeconds(0.01f);
+            m_canvasGroup.interactable = false;
+        }
     }
 }

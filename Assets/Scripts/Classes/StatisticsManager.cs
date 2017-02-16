@@ -130,7 +130,7 @@ namespace Assets.Scripts.Behaviours
             }
             m_started = false;
 
-            //update game statistics
+            //update game statistics (don't need saving)
             m_game.PlayTime = Time.time - m_game.PlayTime;
 
             //update global statistics
@@ -140,6 +140,7 @@ namespace Assets.Scripts.Behaviours
             }
             m_global.GamesPlayed++;
             m_global.PlayTime += m_game.PlayTime;
+            //save
             m_global.Save();
 
             //update mode statistics
@@ -153,17 +154,21 @@ namespace Assets.Scripts.Behaviours
                 m_mode.GamesLost++;
                 m_mode.GamesWonInRow = 0;
             }
+            if (finish != Finish.ABORTED)
+            {
+                m_mode.PlayTime = Mathf.Min(m_mode.PlayTime, m_game.PlayTime);
+                m_mode.BestTurns = Math.Min(m_mode.BestTurns, m_game.Turns);
+                m_mode.WorstScore = Math.Min(m_mode.WorstScore, score);
+                //m_global.GamesPlayed is not used since it contains aborted games
+                float finished = Convert.ToSingle(m_mode.GamesLost + m_mode.GamesWon);
+                m_mode.TurnsAverage = (m_mode.TurnsAverage * (finished - 1.0f) + Convert.ToSingle(m_game.Turns)) / finished;
+                m_mode.ScoreAverage = (m_mode.ScoreAverage * (finished - 1.0f) + Convert.ToSingle(score)) / finished;
+            }
             m_mode.GamesPlayed++;
-            m_mode.PlayTime = Mathf.Min(m_mode.PlayTime, m_game.PlayTime);
             m_mode.BiggestCombo = Math.Max(m_mode.BiggestCombo, m_game.BiggestCombo);
             m_mode.Combos = Math.Max(m_mode.Combos, m_game.Combos);
-            m_mode.BestTurns = Math.Min(m_mode.BestTurns, m_game.Turns);
             m_mode.BestExtraTurns = Math.Max(m_mode.BestExtraTurns, m_game.ExtraTurns);
-            m_mode.WorstScore = Math.Min(m_mode.WorstScore, score);
-            //m_global.GamesPlayed is not used since it contains aborted games
-            float finished = Convert.ToSingle(m_mode.GamesLost + m_mode.GamesWon);
-            m_mode.TurnsAverage = (m_mode.TurnsAverage * (finished - 1.0f) + Convert.ToSingle(m_game.Turns)) / finished;
-            m_mode.ScoreAverage = (m_mode.ScoreAverage * (finished - 1.0f) + Convert.ToSingle(score)) / finished;
+            //save
             m_mode.Save(m_modeIdentifier);
 
             PlayerPrefs.Save();

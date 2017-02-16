@@ -14,6 +14,7 @@ namespace Assets.Scripts.Behaviours
         private float m_shakeTimer;
         private float m_shakeIntensity;
         private Vector3 m_originalPosition;
+        private Transform m_transform;
 
         private const float c_borderFactor = 1.2f;
         private const float c_shakeSpeed = 1.3f;
@@ -26,7 +27,8 @@ namespace Assets.Scripts.Behaviours
             m_height = m_camera.pixelHeight;
             m_aspect = m_camera.aspect;
             m_shakeTimer = 0.0f;
-            m_originalPosition = transform.position;
+            m_transform = transform;
+            m_originalPosition = m_transform.position;
             SetView();
         }
 
@@ -46,7 +48,7 @@ namespace Assets.Scripts.Behaviours
             }
             else
             {
-                transform.position = m_originalPosition;
+                m_transform.position = m_originalPosition;
             }
         }
 
@@ -71,8 +73,8 @@ namespace Assets.Scripts.Behaviours
             }
 
             //position and rotate camera
-            transform.position = new Vector3(playfieldBounds.center.x, playfieldBounds.center.y, -10.0f);
-            transform.rotation = Quaternion.identity;
+            m_transform.position = new Vector3(playfieldBounds.center.x, playfieldBounds.center.y, -10.0f);
+            m_transform.rotation = Quaternion.identity;
             m_camera.orthographicSize = size;
         }
 
@@ -82,7 +84,7 @@ namespace Assets.Scripts.Behaviours
             float x = intensity * c_shakeFactor * Mathf.Sin(m_shakeTimer * 30.0f);
             float y = intensity * c_shakeFactor * Mathf.Sin(m_shakeTimer * 30.0f + 12345.0f);
 
-            transform.position = new Vector3(m_originalPosition.x + x, m_originalPosition.y + y, m_originalPosition.z);
+            m_transform.position = new Vector3(m_originalPosition.x + x, m_originalPosition.y + y, m_originalPosition.z);
             m_shakeTimer = Mathf.Max(m_shakeTimer - Time.deltaTime * c_shakeSpeed, 0.0f);
         }
     }

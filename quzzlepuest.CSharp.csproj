@@ -80,6 +80,7 @@
     <Compile Include="Assets\Scripts\Behaviours\CustomUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\DefaultUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\DelayedAudio.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\DeleteDataUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Dimmer.cs" />
     <Compile Include="Assets\Scripts\Behaviours\DummyTokenDropper.cs" />
     <Compile Include="Assets\Scripts\Behaviours\EndedUI.cs" />
@@ -105,9 +106,11 @@
     <Compile Include="Assets\Scripts\Behaviours\ResultsUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\RuleSet.cs" />
     <Compile Include="Assets\Scripts\Behaviours\RuleSetSmash.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\ScrollviewVisualizerUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\SliderVisualizer2DUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\SliderVisualizerUI.cs" />
-    <Compile Include="Assets\Scripts\Behaviours\StatisticsManager.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\StatisticsDropdownUI.cs" />
+    <Compile Include="Assets\Scripts\Behaviours\StatisticsUI.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TitleScreenDecorator.cs" />
     <Compile Include="Assets\Scripts\Behaviours\Token.cs" />
     <Compile Include="Assets\Scripts\Behaviours\TokenAnimator.cs" />
@@ -124,6 +127,7 @@
     <Compile Include="Assets\Scripts\Classes\Options.cs" />
     <Compile Include="Assets\Scripts\Classes\PositionStack.cs" />
     <Compile Include="Assets\Scripts\Classes\Preferences.cs" />
+    <Compile Include="Assets\Scripts\Classes\StatisticsManager.cs" />
     <Compile Include="Assets\Scripts\Classes\SwapTester.cs" />
     <Compile Include="Assets\Scripts\Classes\TokenStack.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ICameraAlertTarget.cs" />
@@ -135,6 +139,7 @@
     <Compile Include="Assets\Scripts\Interfaces\IOptionEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IResultEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IResultSetTarget.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\IStatisticsEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ITokenEventTarget.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ITokenStatusEventTarget.cs" />
     <Compile Include="Assets\Scripts\Structs\Combination.cs" />

@@ -21,6 +21,7 @@ namespace Assets.Scripts.Behaviours
         private float m_removeTimer;
         private float m_refTime;
         private ParticleSystem m_particleSystem;
+        private Transform m_transform;
 
         private const float c_animationSpeed = 5.0f;
         private const float c_slowDownSpeed = 2.5f;
@@ -38,6 +39,7 @@ namespace Assets.Scripts.Behaviours
             m_removeTimer = 0.0f;
             m_refTime = Time.time;
             m_particleSystem = GetComponent<ParticleSystem>();
+            m_transform = transform;
         }
 
         void Update() //TODO: could be moved to Coroutines...
@@ -46,29 +48,29 @@ namespace Assets.Scripts.Behaviours
             if (m_hoverTimer > 0.0f)
             {
                 m_hoverTimer = Mathf.Max(0.0f, m_hoverTimer - c_slowDownSpeed * Time.deltaTime);
-                transform.eulerAngles = Vector3.Slerp(m_originalRotation, m_currentRotation, m_hoverTimer);
+                m_transform.eulerAngles = Vector3.Slerp(m_originalRotation, m_currentRotation, m_hoverTimer);
             }
 
             //move to new position
             if (m_moveTimer > 0.0f)
             {
                 m_moveTimer = Mathf.Max(0.0f, m_moveTimer - c_movementSpeed * Time.deltaTime);
-                transform.position = Vector3.Lerp(m_targetPosition, m_originalPosition, m_moveTimer);
+                m_transform.position = Vector3.Lerp(m_targetPosition, m_originalPosition, m_moveTimer);
             }
 
             //move back to old position
             if ((m_moveTimer <= 0.0f) && (m_moveTimerReverse > 0.0f))
             {
                 m_moveTimerReverse = Mathf.Max(0.0f, m_moveTimerReverse - c_movementSpeed * Time.deltaTime);
-                transform.position = Vector3.Lerp(m_originalPosition, m_targetPosition, m_moveTimerReverse);
+                m_transform.position = Vector3.Lerp(m_originalPosition, m_targetPosition, m_moveTimerReverse);
             }
 
             //token is being removed
             if (m_removeTimer > 0.0f)
             {
                 m_removeTimer = Mathf.Max(0.0f, m_removeTimer - c_scalingSpeed * Time.deltaTime);
-                transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, m_removeTimer);
-                transform.Rotate(0.0f, 0.0f, Time.deltaTime * c_removeSpeed);
+                m_transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, m_removeTimer);
+                m_transform.Rotate(0.0f, 0.0f, Time.deltaTime * c_removeSpeed);
             }
 
             //token is being hovered
@@ -76,22 +78,22 @@ namespace Assets.Scripts.Behaviours
             {
                 float angle = c_animationAngle * Mathf.Sin(c_animationSpeed * (Time.time - m_refTime));
                 m_currentRotation = new Vector3(m_originalRotation.x, angle, m_originalRotation.z);
-                transform.eulerAngles = m_currentRotation;
+                m_transform.eulerAngles = m_currentRotation;
             }
         }
 
         public void AnimateDestruction()
         {
-            Vector3 pos = transform.position;
+            Vector3 pos = m_transform.position;
             pos.z -= 1.0f; //make sure particle effect layers everything. Cheap hack to avoid child GO
-            transform.position = pos;
+            m_transform.position = pos;
             m_particleSystem.Play();
         }
 
         #region events
         public void OnMoveTo(Vector3 newPosition)
         {
-            m_originalPosition = transform.position;
+            m_originalPosition = m_transform.position;
             m_targetPosition = newPosition;
             m_moveTimer = 1.0f;
             m_moveTimerReverse = 0.0f;
@@ -120,7 +122,7 @@ namespace Assets.Scripts.Behaviours
 
             m_hoverTimer = 0.0f;
             m_refTime = Time.time;
-            transform.eulerAngles = m_originalRotation;
+            m_transform.eulerAngles = m_originalRotation;
         }
 
         public void OnPointerExit(PointerEventData data)

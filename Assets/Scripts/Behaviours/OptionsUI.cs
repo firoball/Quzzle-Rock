@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System;
 using Assets.Scripts.Interfaces;
 
 namespace Assets.Scripts.Behaviours

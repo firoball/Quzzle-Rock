@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 namespace Assets.Scripts.Behaviours
 {
@@ -20,6 +21,7 @@ namespace Assets.Scripts.Behaviours
         {
             m_bounds = PlayField.GetDimension();
             SetShapeSize();
+            StartCoroutine(QualityWatch());
         }
 
         private void SetShapeSize()
@@ -32,6 +34,24 @@ namespace Assets.Scripts.Behaviours
             ParticleSystem.EmissionModule emission = m_particles.emission;
             ParticleSystem.MinMaxCurve startRate = emission.rateOverTime;
             emission.rateOverTime = (m_bounds.extents.x * m_bounds.extents.y) * c_density * startRate.constant;
+        }
+
+        //clumsy, but it does not really matter performance wise
+        private IEnumerator QualityWatch()
+        {
+            while (true)
+            {
+                //no particles for lowest quality setting
+                if (QualitySettings.GetQualityLevel() > 0)
+                {
+                    m_particles.Play();
+                }
+                else
+                {
+                    m_particles.Stop();
+                }
+                yield return new WaitForSeconds(3.0f);
+            }
         }
     }
 }
