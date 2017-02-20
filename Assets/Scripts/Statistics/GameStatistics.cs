@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Assets.Scripts.Classes
+namespace Game.Statistics
 {
 
     public class GameStatistics

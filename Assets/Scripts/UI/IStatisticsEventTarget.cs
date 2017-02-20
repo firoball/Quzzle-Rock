@@ -1,6 +1,6 @@
 ﻿using UnityEngine.EventSystems;
 
-namespace Assets.Scripts.Interfaces
+namespace Game.UI
 {
     public interface IStatisticsEventTarget : IEventSystemHandler
     {

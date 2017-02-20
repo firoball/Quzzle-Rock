@@ -2,10 +2,9 @@
 using UnityEngine.EventSystems;
 using System;
 using System.Collections.Generic;
-using Assets.Scripts.Classes;
-using Assets.Scripts.Interfaces;
+using Game.UI;
 
-namespace Assets.Scripts.Behaviours
+namespace Game.Statistics
 {
     public class StatisticsManager
     {

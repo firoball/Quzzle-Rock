@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Assets.Scripts.Classes
+namespace Game.Config
 {
     public class Options
     {

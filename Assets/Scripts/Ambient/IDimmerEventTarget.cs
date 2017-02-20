@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Assets.Scripts.Interfaces
+namespace Game.Ambient
 {
     public interface IDimmerEventTarget : IEventSystemHandler
     {

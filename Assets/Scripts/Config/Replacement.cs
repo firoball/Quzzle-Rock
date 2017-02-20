@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-namespace Assets.Scripts.Structs
+namespace Game.Config
 {
     [Serializable]
     public struct Replacement

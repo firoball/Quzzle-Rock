@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System;
-namespace Assets.Scripts.Classes
+namespace Game.Config
 {
     [Serializable]
     public class Preferences
