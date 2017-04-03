@@ -15,6 +15,8 @@ namespace Game.UI
         [Range(0.0f, 400.0f)]
         private float m_buttonSpacing = 20.0f;
         [SerializeField]
+        private string m_website = "http://firoball.de";
+        [SerializeField]
         private GameObject m_textButtonPrefab;
         [SerializeField]
         private GameObject m_iconButtonPrefab;
@@ -71,11 +73,20 @@ namespace Game.UI
                 button = CreateIconButton(pos, "book_alt2");
                 button.onClick.AddListener(() => OpenMenu(m_helpMenu));
                 pos.y -= yOffset;
-                button = CreateIconButton(pos, "list");
+                button = CreateIconButton(pos, "bars");
                 button.onClick.AddListener(() => OpenMenu(m_statisticsMenu));
                 pos.y -= yOffset;
                 button = CreateIconButton(pos, "cog");
                 button.onClick.AddListener(() => OpenMenu(m_optionsMenu));
+
+                //website button does not make sense for web application
+                if (Application.platform != RuntimePlatform.WebGLPlayer)
+                {
+                    pos.y -= yOffset;
+                    button = CreateIconButton(pos, "link");
+                    button.onClick.AddListener(() => OpenWebsite());
+                }
+
             }
             else
             {
@@ -135,6 +146,11 @@ namespace Game.UI
                     LoadLevel(1);
                 }
             }
+        }
+
+        private void OpenWebsite()
+        {
+            Application.OpenURL(m_website);
         }
 
     }
