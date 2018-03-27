@@ -13,10 +13,10 @@ namespace Game.UI.Controls
         {
             Transform child;
 
-            child = transform.FindChild("Key");
+            child = transform.Find("Key");
             m_key = child.GetComponent<Text>();
 
-            child = transform.FindChild("Value");
+            child = transform.Find("Value");
             m_value = child.GetComponent<Text>();
         }
 

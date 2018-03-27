@@ -46,7 +46,7 @@ namespace Game.Logic.Objects
         void Start()
         {
             m_tokenStatus = TokenStatus.UNSELECT;
-            Transform child = transform.FindChild("SelectionMarker");
+            Transform child = transform.Find("SelectionMarker");
 
             if (child != null)
             {
